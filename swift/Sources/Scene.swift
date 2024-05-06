@@ -160,7 +160,7 @@ public struct Scene {
       // Adjust the ray to the transformation of the node.
       let r = ray
         .translated(by: -translation(of: n))
-        .rotated(by: rotation(of: n))
+        .rotated(by: rotation(of: n).inverted)
 
       if let d = s.collisionDistance(from: r, withCulling: cullingIsEnabled) {
         let i = results.partitioningIndex(where: { (a) in a.distance < d })
