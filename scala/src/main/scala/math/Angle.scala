@@ -18,12 +18,9 @@ final class Angle private (val radians: Double):
 
   /** Returns `this` wrapped within the interval `[0, 2 * pi[`. */
   def wrapped: Angle =
-    var r = radians
-    if r < 0 then
-      while (r < 0) do r = r + 2 * Pi
-    else
-      while (r >= 2 * Pi) do r = r - 2 * Pi
-    new Angle(r)
+    if radians < 0 then Angle(radians + 2 * Pi).wrapped
+    else if radians >= 2 * Pi then Angle(radians - 2 * Pi).wrapped
+    else this
 
   /** Returns the sum of two angles. */
   def + (that: Angle): Angle =

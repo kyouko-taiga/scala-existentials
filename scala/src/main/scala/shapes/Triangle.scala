@@ -16,31 +16,28 @@ final case class Triangle(a: Vector3, b: Vector3, c: Vector3) extends CollisionS
   def centroid: Vector3 = (a + b + c) / 3.0
 
   def collisionDistance(ray: Ray, cullingIsEnabled: Boolean): Option[Double] =
-
     // Möller-Trumbore algorithm from "Fast, Minimum Storage Ray/Triangle Intersection", 1997.
+    for
+      ab <- Some(b - a) // so the for-comp builds an option
+      ac = c - a
+      pvec = ray.direction.cross(ac)
+      det = ab.dot(pvec)
 
-    val ab = b - a
-    val ac = c - a
-    val pvec = ray.direction.cross(ac)
-    val det = ab.dot(pvec)
-
-    if cullingIsEnabled && (det < ulp(1.0)) then
+      if !(cullingIsEnabled && det < ulp(1.0))
       // If the determinant is negative, the triangle is back-facing.
-      return None
-    else if abs(det) < ulp(1.0) then
+      if !(abs(det) < ulp(1.0))
       // If the determinant is close to 0, the ray is parallel to the triangle.
-      return None
 
-    val idet = 1.0 / det
-    val tvec = ray.origin - a
-    val u = tvec.dot(pvec) * idet
-    if (u < 0.0) || (u > 1.0) then return None
+      idet = 1.0 / det
+      tvec = ray.origin - a
+      u = tvec.dot(pvec) * idet
+      if 0.0 <= u && u <= 1.0
 
-    val qvec = tvec.cross(ab)
-    val v = ray.direction.dot(qvec) * idet
-    if (v < 0.0) || (v > 1.0) then return None
+      qvec = tvec.cross(ab)
+      v = ray.direction.dot(qvec) * idet
+      if 0.0 <= v && v <= 1.0
 
-    Some(ac.dot(qvec) * idet)
+    yield ac.dot(qvec) * idet
 
   /** A string representation of `this`. */
   override def toString: String =

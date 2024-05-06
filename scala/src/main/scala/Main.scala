@@ -42,7 +42,7 @@ def randomCollisionShape(using g: Random): CollisionShape =
   var nodes = world.nodes
   var occluded = List[Node]()
 
-  while !nodes.isEmpty do
+  while nodes.nonEmpty do
     val n = nodes.head
     nodes = nodes.drop(1)
 

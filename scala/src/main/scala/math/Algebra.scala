@@ -7,7 +7,7 @@ import scala.math.sqrt
   * A linear equation is a first-prder polinomial equation of the form `ax + b = 0`.
   */
 def solveLinear(a: Double, b: Double): Option[Double] =
-  if a != 0 then Some(-b / a) else None
+  Option.unless(a == 0)(-b / a)
 
 /** Returns the roots of a quadratric equation.
   *
@@ -15,19 +15,13 @@ def solveLinear(a: Double, b: Double): Option[Double] =
   */
 def solveQuatratic(a: Double, b: Double, c: Double): Option[(Double, Double)] =
   val discriminant = (b * b) - (4 * a * c)
-
-  if discriminant == 0.0 then
-    // Only one real root.
-    val x = -0.5 * b / a
-    Some((x, x))
-  else if discriminant > 0.0 then
-    val q = if b > 0.0 then
-      -0.5 * (b + sqrt(discriminant))
+  Option.when(discriminant >= 0d):
+    if discriminant == 0.0 then
+      // Only one real root.
+      val x = -0.5 * b / a
+      (x, x)
     else
-      -0.5 * (b - sqrt(discriminant))
+      val q = -0.5 * (b + (if b > 0d then 1 else -1) * sqrt(discriminant))
+      val (x0, x1) = (q / a, c / q)
+      if x0 < x1 then (x0, x1) else (x1, x0)
 
-    val x0 = q / a
-    val x1 = c / q
-    Some(if x0 < x1 then (x0, x1) else (x1, x0))
-  else
-    return None

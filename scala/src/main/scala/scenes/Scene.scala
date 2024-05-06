@@ -8,7 +8,7 @@ import scala.collection.mutable
   *
   * A scene is the root of a node hierarchy representing various objects with their models and
   * coordinates. While a scene is not itself a node, it can be assigned as a node's presentation.
-  * In that case, note that its contents is considered isolated from that of other scene. Hence,
+  * In that case, note that its contents is considered isolated from that of another scene. Hence,
   * the contents of a scene can never collide with the contents of another.
   *
   * @param nodes The nodes in the scene.
@@ -25,43 +25,28 @@ final class Scene private (
     */
   def adding(n: Node, p: Option[Node] = None): Scene =
     require(!nodes.contains(n))
-    val newNodes = nodes + n
-    val newRelationships = p match
-      case Some(q) =>
-        require(p.map((q) => nodes.contains(q)).getOrElse(true))
-        relationships ++ List(
-          n -> Scene.NodeRelationships(Some(q), List()),
-          q -> relationships(q).addingChild(n))
-      case None =>
-        relationships + (n -> Scene.NodeRelationships(None, List()))
-    new Scene(newNodes, newRelationships)
+    val newParentR =
+      n -> Scene.NodeRelationships(p, List())
+    val updatedChildR = p.map: q =>
+      require(nodes.contains(q))
+      q -> relationships(q).addingChild(n)
+    new Scene(nodes + n, relationships + newParentR ++ updatedChildR)
 
   /** Returns a copy of `this` in which `n` and its children have been removed. */
   def removing(n: Node): Scene =
-    def loop(
-        children: List[Node], ns: Set[Node], rs: Map[Node, Scene.NodeRelationships]
-    ): (Set[Node], Map[Node, Scene.NodeRelationships]) =
-      children match
-        case (h :: t) =>
-          val cs = rs(h).children
-          loop(cs ++ t, ns - h, rs - h)
-        case Nil =>
-          (ns, rs)
-    var (ns, rs) = loop(relationships(n).children, nodes, relationships)
+    val updatedParentR = parent(n).map: p =>
+      p -> relationships(p).removingChild(n)
+    val ds = descendants(n)
+    new Scene(nodes -- ds - n, relationships -- ds ++ updatedParentR)
 
-    rs(n).parent match
-      case Some(p) =>
-        new Scene(ns - n, rs + (p -> rs(p).removingChild(n)))
-      case None =>
-        new Scene(ns - n, rs)
+  /** Ancestor of `n` from innermost to outermost. */
+  def ancestors(n: Node): Seq[Node] = parent(n) match
+    case Some(p) => p +: ancestors(p)
+    case None => Seq()
 
-  /** Calls `visit` on each ancestor of `n` from innermost to outermost. */
-  def forEachAncestor(n: Node)(visit: Node => Unit): Unit =
-    def loop(m: Option[Node]): Unit =
-      m match
-        case Some(p) => visit(p); loop(relationships(p).parent)
-        case None => ()
-    loop(relationships(n).parent)
+  def descendants(n: Node): Seq[Node] =
+    val cs = children(n)
+    cs ++ cs.flatMap(descendants)
 
   /** Returns the parent of `n`, if any. */
   def parent(n: Node): Option[Node] =
@@ -73,15 +58,11 @@ final class Scene private (
 
   /** Returns the translation of `n` in the coordinate space of this scene. */
   def translation(n: Node): Vector3 =
-    var p = n.translation
-    forEachAncestor(n)((a) => p += a.translation)
-    p
+    ancestors(n).foldLeft(n.translation)(_ + _.translation)
 
   /** Returns the rotation of `n` in the coordinate space of this scene. */
   def rotation(n: Node): Quaternion =
-    var r = n.rotation
-    forEachAncestor(n)((a) => r *= a.rotation)
-    r
+    ancestors(n).foldLeft(n.rotation)(_ + _.rotation)
 
   /** Returns the nodes whose shapes collide with `ray` along with the distance from `ray`'s origin
     * to the collision, from shortest to farthest.
@@ -95,21 +76,16 @@ final class Scene private (
     ray: Ray, mask: Scene.CollisionMask = -1, cullingIsEnabled: Boolean = true
   ): IndexedSeq[(Node, Double)] =
     val results = mutable.ArrayBuffer[(Node, Double)]()
-    for n <- nodes if (n.collisionMask & mask) != 0 do
-      n.shape match
-        case Some(s) =>
-          // Adjust the ray to the transformation of the node.
-          val r = ray
-            .translatedBy(-translation(n))
-            .rotatedBy(rotation(n).inverted)
-
-          s.collisionDistance(r, cullingIsEnabled) match
-            case Some(d) =>
-              val i = results.partitioningIndex((a) => a(1) < d)
-              results.insert(i, (n, d))
-            case None => ()
-
-        case None => ()  // Nothing to do if the node has no collision shape.
+    for
+      n <- nodes if (n.collisionMask & mask) != 0
+      s <- n.shape
+      // Adjust the ray to the transformation of the node.
+      r = ray
+        .translatedBy(-translation(n))
+        .rotatedBy(rotation(n).inverted)
+      d <- s.collisionDistance(r, cullingIsEnabled)
+      i = results.partitioningIndex(_._2 < d)
+    do results.insert(i, n -> d)
     results.toIndexedSeq
 
 object Scene:

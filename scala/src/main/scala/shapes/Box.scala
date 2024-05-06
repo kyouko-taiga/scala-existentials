@@ -36,13 +36,13 @@ final case class Box(dimensions: Vector3) extends CollisionShape:
     val tmin = (min - ray.origin) / ray.direction
     val tmax = (max - ray.origin) / ray.direction
 
-    val t = tmin.combined(tmax)(scala.math.min)
-    val n = scala.math.max(scala.math.max(t.x, t.y), t.z)
+    val t = tmin.combined(tmax)(math.min)
+    val n = t.x max t.y max t.z
 
-    val u = tmax.combined(tmax)(scala.math.max)
-    val f = scala.math.min(scala.math.min(u.x, u.y), u.z)
+    val u = tmax.combined(tmax)(math.max)
+    val f = u.x min u.y min u.z
 
-    if (n < f) then Some(n) else None
+    Option.when(n < f)(n)
 
   /** A string representation of `this`. */
   override def toString: String =

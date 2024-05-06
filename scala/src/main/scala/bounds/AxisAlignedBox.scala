@@ -11,7 +11,7 @@ import scala.math.abs
 final case class AxisAlignedBox(origin: Vector3, dimensions: Vector3):
 
   /** The box' smallest x-coordinate. */
-  def minX: Double = if (dimensions.x > 0.0) then origin.x else (origin.x + dimensions.x)
+  def minX: Double = origin.x + (dimensions.x min 0)
 
   /** The box' smallest y-coordinate. */
   def minY: Double = if (dimensions.y > 0.0) then origin.y else (origin.y + dimensions.y)

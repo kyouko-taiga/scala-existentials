@@ -51,24 +51,21 @@ final case class Vector3(x: Double, y: Double, z: Double):
     (that - this).squaredMagnitude
 
   /** Returns component-wise application of `combine` on the elements of `this` and `that`. */
-  def combined(that: Vector3)(combine: (Double, Double) => Double): Vector3 =
+  inline def combined(that: Vector3)(inline combine: (Double, Double) => Double): Vector3 =
     Vector3(combine(x, that.x), combine(y, that.y), combine(z, that.z))
 
   /** Returns the component-wise addition of two vectors. */
-  def + (that: Vector3): Vector3 =
-    Vector3(x + that.x, y + that.y, z + that.z)
+  def + (that: Vector3): Vector3 = combined(that)(_ + _)
 
   /** Returns the component-wise subtraction of two vectors. */
-  def - (that: Vector3): Vector3 =
-    Vector3(x - that.x, y - that.y, z - that.z)
+  def - (that: Vector3): Vector3 = combined(that)(_ - _)
 
   /** Returns the additive opposite of a vector. */
   def unary_- : Vector3 =
     Vector3(-x, -y, -z)
 
   /** Returns the component-wise multiplication of two vectors. */
-  def * (that: Vector3): Vector3 =
-    Vector3(x * that.x, y * that.y, z * that.z)
+  def * (that: Vector3): Vector3 = combined(that)(_ * _)
 
   /** Returns the multiplication of a vector by a scalar. */
   def * (that: Double): Vector3 =
@@ -84,8 +81,7 @@ final case class Vector3(x: Double, y: Double, z: Double):
     this + uv + uuv
 
   /** Returns the component-wise division of two vectors. */
-  def / (that: Vector3): Vector3 =
-    Vector3(x / that.x, y / that.y, z / that.z)
+  def / (that: Vector3): Vector3 = combined(that)(_ / _)
 
   /** Returns the division of a vector by a scalar. */
   def / (that: Double): Vector3 =
