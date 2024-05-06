@@ -1,7 +1,6 @@
 extension Collection {
 
-  /// Returns the start index of the partition of a collection that matches
-  /// the given predicate.
+  /// Returns the start index of the partition of a collection that matches the given predicate.
   public func partitioningIndex(
     where belongsInSecondPartition: (Element) throws -> Bool
   ) rethrows -> Index {

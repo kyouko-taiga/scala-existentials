@@ -144,6 +144,7 @@ public struct Scene {
   ///
   /// - Parameters:
   ///   - ray: The ray with which a collision will be tested.
+  ///   - mask: A mask for filtering the nodes considered for collision.
   ///   - cullingIsEnabled: On side-shapes, specifies whether face culling is enabled, in which
   ///     case a collision will not be detected unless the ray hits the front of the shape.
   public func shoot(
@@ -156,7 +157,7 @@ public struct Scene {
       // Nothing to do if the node has no collision shape.
       guard let s = self[n].shape else { continue }
 
-      // Adjust the ray to the transformation of the nodee.
+      // Adjust the ray to the transformation of the node.
       let r = ray
         .translated(by: -translation(of: n))
         .rotated(by: rotation(of: n))
