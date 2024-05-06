@@ -1,6 +1,9 @@
 package rays.math
 
+import rays.bounds.AxisAlignedBox
+
 import scala.math.sqrt
+import scala.util.Random
 
 /** A 3-dimensional vector.
   *
@@ -109,4 +112,12 @@ object Vector3:
   /** A vector whose z-component is one and other components are zero. */
   final val unitZ = Vector3(0.0, 0.0, 1.0)
 
+  /** Returns a random point contained in `bounds`. */
+  def randomIn(bounds: AxisAlignedBox)(using g: Random): Vector3 =
+    Vector3(
+      g.between(bounds.minX, bounds.maxX),
+      g.between(bounds.minY, bounds.maxY),
+      g.between(bounds.minZ, bounds.maxZ))
+
 end Vector3
+

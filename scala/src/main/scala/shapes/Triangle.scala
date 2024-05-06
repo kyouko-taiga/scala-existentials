@@ -9,7 +9,7 @@ import scala.math.{abs, ulp}
   * @param b The triangle's second vertex.
   * @param c The triangle's third vertex.
   */
-final case class Triangle(a: Vector3, b: Vector3, c: Vector3):
+final case class Triangle(a: Vector3, b: Vector3, c: Vector3) extends CollisionShape:
 
   def origin: Vector3 = Vector3.zero
 
