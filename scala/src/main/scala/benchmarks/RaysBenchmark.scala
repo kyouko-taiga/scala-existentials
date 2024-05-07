@@ -8,12 +8,13 @@ import java.util.concurrent.TimeUnit.SECONDS
 
 import rays.run
 
+@BenchmarkMode(Array(JMHMode.AverageTime))
 @Fork(value = 2)
-@Warmup(iterations = 5, time = 1, timeUnit = SECONDS)
-@Measurement(iterations = 5, time = 1, timeUnit = SECONDS)
+@Warmup(iterations = 4, time = 5, timeUnit = SECONDS)
+@Measurement(iterations = 4, time = 5, timeUnit = SECONDS)
 @State(Scope.Benchmark)
 class RaysBenchmark:
-  @Param(Array("100", "1000"))
+  @Param(Array("512", "1024", "2048"))
   var sizeString: String = uninitialized
 
   var size: Int = uninitialized
