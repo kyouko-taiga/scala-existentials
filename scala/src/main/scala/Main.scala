@@ -25,14 +25,12 @@ def randomCollisionShape(using g: Random): CollisionShape =
     case n =>
       throw new RuntimeException("unreachable")
 
-@main def Main =
-  given Random = scala.util.Random()
-
+def run(size: Int)(using Random): Int =
   // Create an empty world.
   var world = Scene()
 
   // Add random objects to the world.
-  for _ <- 0 until 1000 do
+  for _ <- 0 until size do
     val n = Node()
     n.translation = Vector3.randomIn(worldBounds)
     n.shape = Some(randomCollisionShape)
@@ -54,4 +52,8 @@ def randomCollisionShape(using g: Random): CollisionShape =
       world = world.removing(m)
     occluded ++= collisions.drop(1).map((c) => c(0))
 
-  println(occluded.length)
+  occluded.length
+
+@main def Main(size: Int): Unit =
+  val res = run(size)(using Random())
+  println(s"Occluded $res objects.")

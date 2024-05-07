@@ -6,3 +6,5 @@ lazy val root = project
     name := "rays",
     version := "0.1.0-SNAPSHOT",
     scalaVersion := scala3Version)
+
+enablePlugins(JmhPlugin)
