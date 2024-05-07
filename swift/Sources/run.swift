@@ -16,12 +16,12 @@ func randomCollisionShape() -> any CollisionShape {
   }
 }
 
-func main() {
+public func run(size: Int) -> Int {
   // Creates an empty world.
   var world = Scene()
 
   // Add random objects to the world.
-  for _ in 0 ..< 1000 {
+  for _ in 0 ..< size {
     var n = Node()
     n.translation = .random(in: worldBounds)
     n.shape = randomCollisionShape()
@@ -45,7 +45,5 @@ func main() {
     occluded.append(contentsOf: collisions.dropFirst().map(\.node))
   }
 
-  print(occluded.count)
+  return occluded.count
 }
-
-main()
