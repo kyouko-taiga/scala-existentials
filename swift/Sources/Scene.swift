@@ -13,69 +13,68 @@ public struct Scene {
   public struct NodeIdentifier: Hashable {
 
     /// The raw value of the identifier.
-    fileprivate let rawValue: StableArray<NodeEntry>.Index
+    fileprivate let rawValue: StableArray<NodeRelationships>.Index
 
   }
 
-  /// The description of a node contained in a scene hierarchy.
-  public struct NodeEntry {
-
-    /// The value of the node.
-    public var value: Node
+  /// The description of the relationships of a node contained in a scene hierarchy.
+  public struct NodeRelationships {
 
     /// The relationships of a node.
-    private var links: [NodeIdentifier]
+    private var relationships: [NodeIdentifier]
 
     /// `true` if the node has a parent.
     public let hasParent: Bool
 
     /// Initializes an instance with a node's value, its parent, and its children.
     fileprivate init<S: Sequence<NodeIdentifier>>(
-      value: Node, parent: NodeIdentifier?, children: S
+      parent: NodeIdentifier?, children: S
     ) {
-      self.value = value
       if let p = parent {
-        self.links = [p]
+        self.relationships = [p]
         self.hasParent = true
       } else {
-        self.links = []
+        self.relationships = []
         self.hasParent = false
       }
-      self.links.append(contentsOf: children)
+      self.relationships.append(contentsOf: children)
     }
 
     /// The parent of the node, if any.
     fileprivate var parent: NodeIdentifier? {
-      hasParent ? links[0] : nil
+      hasParent ? relationships[0] : nil
     }
 
     /// The children of the node.
     fileprivate var children: ArraySlice<NodeIdentifier> {
-      hasParent ? links[1...] : links[...]
+      hasParent ? relationships[1...] : relationships[...]
     }
 
     /// Adds a child to the node.
     fileprivate mutating func addChild(_ c: NodeIdentifier) {
-      links.append(c)
+      relationships.append(c)
     }
 
     /// Removes a child from the node.
     fileprivate mutating func removeChild(_ c: NodeIdentifier) {
-      links.remove(at: links.firstIndex(of: c)!)
+      relationships.remove(at: relationships.firstIndex(of: c)!)
     }
 
   }
 
   /// The nodes in the scene, in no particular order.
-  private var nodes: StableArray<NodeEntry> = []
+  private var nodes: StableArray<Node> = []
+
+  /// A map from node identifier to its relationships.
+  private var links: Array<NodeRelationships> = []
 
   /// Initializes an empty scene.
   public init() {}
 
   /// Accesses the node at the given index.
   public subscript(n: NodeIdentifier) -> Node {
-    _read { yield nodes[n.rawValue].value }
-    _modify { yield &nodes[n.rawValue].value }
+    _read { yield nodes[n.rawValue] }
+    _modify { yield &nodes[n.rawValue] }
   }
 
   /// Returns the identifiers of all the nodes in the scene.
@@ -88,19 +87,26 @@ public struct Scene {
   public mutating func add(_ n: Node, childOf p: NodeIdentifier? = nil) -> NodeIdentifier {
     if let q = p { precondition(nodes.isActiveIndex(q.rawValue)) }
     let i = NodeIdentifier(rawValue: nodes.endIndex)
-    nodes.append(.init(value: n, parent: p, children: []))
+    if links.count != links.endIndex {
+      links.removeSubrange(links.endIndex...)
+    }
+    nodes.append(n)
+    links.append(.init(parent: p, children: []))
+    if links.count != nodes.count {
+
+    }
     return i
   }
 
   /// Removes `n` from the scene, along with all its children.
   public mutating func remove(_ n: NodeIdentifier) {
-    var children = Array(nodes[n.rawValue].children)
+    var children = Array(links[n.rawValue].children)
     while let c = children.popLast() {
-      children.append(contentsOf: nodes[c.rawValue].children)
+      children.append(contentsOf: links[c.rawValue].children)
       nodes.remove(at: c.rawValue)
     }
 
-    if let p = parent(of: n) { nodes[p.rawValue].removeChild(p) }
+    if let p = parent(of: n) { links[p.rawValue].removeChild(p) }
     nodes.remove(at: n.rawValue)
   }
 
@@ -108,34 +114,34 @@ public struct Scene {
   public func forEachAncestor(
     of n: NodeIdentifier, _ visit: (NodeIdentifier) throws -> Void
   ) rethrows {
-    var m = nodes[n.rawValue].parent
+    var m = links[n.rawValue].parent
     while let p = m {
       try visit(p)
-      m = nodes[p.rawValue].parent
+      m = links[p.rawValue].parent
     }
   }
 
   /// Returns the parent of `n`, if any.
   public func parent(of n: NodeIdentifier) -> NodeIdentifier? {
-    nodes[n.rawValue].parent
+    links[n.rawValue].parent
   }
 
   /// Returns the children of `n`.
   public func children(of n: NodeIdentifier) -> ArraySlice<NodeIdentifier> {
-    nodes[n.rawValue].children
+    links[n.rawValue].children
   }
 
   /// Returns the translation of `n` in the coordinate space of this scene.
   public func translation(of n: NodeIdentifier) -> Vector3 {
     var p = self[n].translation
-    forEachAncestor(of: n, { (a) in p += self[n].translation })
+    forEachAncestor(of: n, { (a) in p += self[a].translation })
     return p
   }
 
   /// Returns the rotation of `n` in the coordinate space of this scene.
   public func rotation(of n: NodeIdentifier) -> Quaternion {
     var r = self[n].rotation
-    forEachAncestor(of: n, { (a) in r *= self[n].rotation })
+    forEachAncestor(of: n, { (a) in r *= self[a].rotation })
     return r
   }
 
