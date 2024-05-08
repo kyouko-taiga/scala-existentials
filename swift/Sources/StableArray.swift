@@ -2,95 +2,131 @@
 ///
 /// This collection can be used instead of `Array` in situations where the index of a particular
 /// element must not be invalidated by the removal of another element.
-struct StableArray<Element> {
+public struct StableArray<Element> {
 
-  /// A position in a stable array.
-  public struct Index: Hashable, Comparable {
+  /// The representation of a stable array.
+  private class Representation {
 
-    /// The raw value of this position.
-    public let rawValue: Int
+    /// The internal capacity of the buffer.
+    let capacity: Int
 
-    /// Returns `true` if `l` precedes `r`.
-    public static func < (l: Self, r: Self) -> Bool { l.rawValue < r.rawValue }
+    /// The number of active elements in the buffer.
+    var count: Int
+
+    /// The position immediately after the last active element in the buffer.
+    var end: Int
+
+    /// The elements of the buffer.
+    let elements: UnsafeMutablePointer<(Element, Bool)>
+
+    /// Creates an instance capable of storing `capacity` elements.
+    init(capacity: Int) {
+      self.capacity = capacity
+      self.count = 0
+      self.end = 0
+      self.elements = .allocate(capacity: capacity)
+    }
+
+    deinit {
+      for i in 0 ..< end {
+        let e = elements.advanced(by: i)
+        if e.pointee.1 { e.deinitialize(count: 1) }
+      }
+    }
 
   }
 
-  /// The contents of a cell in the underying array.
-  fileprivate enum Cell {
+  /// The elements in `self`.
+  private var representation: Representation
 
-    /// A cell occupied with an element.
-    case occupied(Element)
-
-    /// An empty cell pointing at the next occupied cell.
-    case empty(next: UInt32)
-
-    /// `true` if `self` is occupied.
-    var isOccupied: Bool {
-      if case .occupied = self { return true } else { return false }
-    }
-
-    /// Returns the element contained in `self`, which is occupied.
-    var occupant: Element {
-      guard case .occupied(let v) = self else { fatalError() }
-      return v
-    }
-
+  /// Creates an empty instance.
+  public init() {
+    self.representation = .init(capacity: 0)
   }
 
-  /// The contents of the array.
-  ///
-  /// Each value of this array is a "cell" containing either an element, an index pointing at the
-  /// next occupied cell, or the end position if there are no occupied cell after it. A cell is
-  /// emptied if the element that it contained is removed from `self`.
-  ///
-  /// The data structure maintains that the last cell of the array is occupied.
-  private var contents: [Cell] = []
+  /// `true` if `self` is empty.
+  public var isEmpty: Bool {
+    representation.count == 0
+  }
 
-  /// Creates an empty array.
-  public init() {}
+  /// The number of elements in `self`.
+  public var count: Int {
+    representation.count
+  }
+
+  /// The number of elements that can be stored in `self` before new storage is allocated.
+  public var capacity: Int {
+    representation.count + (representation.capacity - representation.end)
+  }
 
   /// Returns `true` if `i` is the index of an element in `self`.
   public func isActiveIndex(_ i: Index) -> Bool {
-    (i.rawValue >= 0) && (i.rawValue < contents.count) && (contents[i.rawValue].isOccupied)
+    (i < representation.end) && representation.elements[i].1
   }
 
   /// Appends `e` at the end of `self`.
   public mutating func append(_ e: Element) {
-    contents.append(.occupied(e))
+    let currentCapacity = capacity
+    let currentCount = count
+
+    if !isKnownUniquelyReferenced(&representation) || (currentCapacity <= currentCount) {
+      // Create a new buffer.
+      var newRepresentation = Representation(capacity: Swift.max(1, currentCapacity * 2))
+      newRepresentation.count = representation.count
+      newRepresentation.end = representation.end
+
+      // Move existing elements.
+      representation.end = 0
+      newRepresentation.elements.moveInitialize(from: representation.elements, count: currentCount)
+      swap(&representation, &newRepresentation)
+    }
+
+    appendAssumingUniqueAndLargeEnough(e)
+  }
+
+  /// Appends `e` at the end of `self` assuming it is not shared and has sufficient capacity.
+  private func appendAssumingUniqueAndLargeEnough(_ e: Element) {
+    let p = representation.end
+    assert(capacity > p)
+    representation.count += 1
+    representation.end += 1
+    representation.elements.advanced(by: p).initialize(to: (e, true))
   }
 
   /// Removes the element at position `p` in `self` and returns its value.
   @discardableResult
-  public mutating func remove(at p: Index) -> Element {
-    // Are we removing the last element?
-    if (p.rawValue == (contents.count - 1)) {
-      return removeLast()
+  public mutating func remove(at p: Int) -> Element {
+    ensureUnique()
+
+    precondition(isActiveIndex(p), "index is out of range")
+
+    representation.count -= 1
+    representation.elements[p].1 = false
+
+    // Did we remove the last element?
+    if p == (representation.end - 1) {
+      var end = p
+      while (end > 0) && !representation.elements.advanced(by: end - 1).pointee.1 { end -= 1 }
+      representation.end = end
     }
 
-    var e: Cell
-    if case .empty(let n) = contents[p.rawValue + 1] {
-      e = .empty(next: n)
-    } else {
-      e = .empty(next: UInt32(truncatingIfNeeded: p.rawValue + 1))
-    }
-
-    if (p.rawValue > 0) && !contents[p.rawValue - 1].isOccupied {
-      contents[p.rawValue - 1] = e
-    }
-
-    swap(&e, &contents[p.rawValue])
-    return e.occupant
+    return representation.elements
+      .advanced(by: p)
+      .withMemoryRebound(to: Element.self, capacity: 1, { (e) in e.move() })
   }
 
-  /// Removes the last element in `self` and returns its value.
-  public mutating func removeLast() -> Element {
-    let e = contents.removeLast()
-    if let i = contents.lastIndex(where: \.isOccupied) {
-      contents.removeSubrange((i + 1)...)
-    } else {
-      contents.removeAll(keepingCapacity: true)
+  /// Ensures that `self` is not shared.
+  private mutating func ensureUnique() {
+    if !isKnownUniquelyReferenced(&representation) {
+      // Create a new buffer.
+      var newRepresentation = Representation(capacity: capacity)
+      newRepresentation.count = representation.count
+      newRepresentation.end = representation.end
+
+      // Copy existing elements.
+      newRepresentation.elements.initialize(from: representation.elements, count: count)
+      swap(&representation, &newRepresentation)
     }
-    return e.occupant
   }
 
 }
@@ -98,47 +134,42 @@ struct StableArray<Element> {
 extension StableArray: ExpressibleByArrayLiteral {
 
   public init(arrayLiteral elements: Element...) {
-    self.contents = elements.map({ (e) in .occupied(e) })
+    self = .init()
+    for e in elements { self.append(e) }
   }
 
 }
 
 extension StableArray: MutableCollection {
 
-  public var startIndex: Index {
-    if !contents.isEmpty, case .empty(let n) = contents[0] {
-      return .init(rawValue: .init(truncatingIfNeeded: n))
-    } else {
-      return .init(rawValue: 0)
+  public typealias Index = Int
+
+  public var startIndex: Int {
+    index(after: -1)
+  }
+
+  public var endIndex: Int {
+    representation.end
+  }
+
+  public func index(after p: Int) -> Int {
+    let end = endIndex
+    for i in (p + 1) ..< end where representation.elements[i].1 { return i }
+    return p + 1
+  }
+
+  public subscript(p: Int) -> Element {
+    _read {
+      precondition(isActiveIndex(p))
+      yield representation.elements[p].0
     }
-  }
-
-  public var endIndex: Index {
-    .init(rawValue: contents.endIndex)
-  }
-
-  public func index(after i: Index) -> Index {
-    if ((i.rawValue + 1) < contents.count), case .empty(let n) = contents[i.rawValue + 1] {
-      return .init(rawValue: .init(truncatingIfNeeded: n))
-    } else {
-      return .init(rawValue: i.rawValue + 1)
+    _modify {
+      precondition(isActiveIndex(p))
+      yield &representation.elements.advanced(by: p).pointee.0
     }
-  }
-
-  public subscript(i: Index) -> Element {
-    get { contents[i.rawValue].occupant }
-    set { contents[i.rawValue] = .occupied(newValue) }
   }
 
 }
-
-extension StableArray.Cell: Equatable where Element: Equatable {}
-
-extension StableArray: Equatable where Element: Equatable {}
-
-extension StableArray.Cell: Hashable where Element: Hashable {}
-
-extension StableArray: Hashable where Element: Hashable {}
 
 extension StableArray: CustomStringConvertible {
 

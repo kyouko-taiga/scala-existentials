@@ -175,7 +175,7 @@ public struct Scene {
 extension Scene.NodeIdentifier: CustomStringConvertible {
 
   public var description: String {
-    "Node(\(rawValue.rawValue))"
+    "Node(\(rawValue))"
   }
 
 }
