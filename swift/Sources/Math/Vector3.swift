@@ -165,11 +165,11 @@ public struct Vector3: Hashable {
   public static let unitZ = Vector3(x: 0.0, y: 0.0, z: 1.0)
 
   /// Returns a random point contained in `bounds`.
-  public static func random(in bounds: AxisAlignedBox) -> Vector3 {
+  public static func random(rand: inout Random, in bounds: AxisAlignedBox) -> Vector3 {
     .init(
-      x: .random(in: bounds.minX ..< bounds.maxX),
-      y: .random(in: bounds.minY ..< bounds.maxY),
-      z: .random(in: bounds.minZ ..< bounds.maxZ))
+      x: rand.nextDoubleBetween(min: bounds.minX, max: bounds.maxX),
+      y: rand.nextDoubleBetween(min: bounds.minY, max: bounds.maxY),
+      z: rand.nextDoubleBetween(min: bounds.minZ, max: bounds.maxZ))
   }
 
 }
