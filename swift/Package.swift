@@ -18,6 +18,11 @@ let package = Package(
       ],
       path: "Sources"
     ),
+    .testTarget(
+      name: "RaysTests",
+      dependencies: ["Rays"],
+      path: "Tests"
+    ),
     .executableTarget(
       name: "RaysMain",
       dependencies: ["Rays"],
