@@ -14,7 +14,7 @@ let package = Package(
     .target(
       name: "Rays",
       dependencies: [
-          .product(name: "Numerics", package: "swift-numerics"),
+        .product(name: "Numerics", package: "swift-numerics"),
       ],
       path: "Sources"
     ),

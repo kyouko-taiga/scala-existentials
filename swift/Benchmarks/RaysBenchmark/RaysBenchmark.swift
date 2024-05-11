@@ -5,16 +5,16 @@ import Foundation
 import Rays
 
 let benchmarks = {
-  let sizes = [512, 1024, 2048]
+  let shapeCounts = [512, 1024, 2048]
   let config = Benchmark.Configuration(
       metrics: [BenchmarkMetric.wallClock],
       //warmupIterations: 10,
       maxDuration: .seconds(120)
       //maxIterations: 30
   )
-  sizes.forEach { size in
-    Benchmark("run(size:\(size))", configuration: config) { benchmark in
-      blackHole(Rays.run(size: size))
+  for shapeCount in shapeCounts {
+    Benchmark("run(shapeCount:\(shapeCount))", configuration: config) { _ in
+      blackHole(Rays.run(shapeCount: shapeCount))
     }
   }
 }
