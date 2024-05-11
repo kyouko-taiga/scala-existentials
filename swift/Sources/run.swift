@@ -16,12 +16,12 @@ func randomCollisionShape() -> any CollisionShape {
   }
 }
 
-public func run(size: Int) -> Int {
+public func run(shapeCount: Int) -> Int {
   // Creates an empty world.
   var world = Scene()
 
   // Add random objects to the world.
-  for _ in 0 ..< size {
+  for _ in 0 ..< shapeCount {
     var n = Node()
     n.translation = .random(in: worldBounds)
     n.shape = randomCollisionShape()
