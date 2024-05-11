@@ -2,15 +2,15 @@
 let worldBounds = AxisAlignedBox(origin: .zero, dimensions: .init(x: 100, y: 100, z: 100))
 
 /// Returns a random collision shape that fits in a unit box centered at the origin.
-func randomCollisionShape() -> any CollisionShape {
-  switch Int.random(in: 0 ..< 3) {
+func randomCollisionShape(rand: inout Random) -> any CollisionShape {
+  switch rand.nextUInt64() % 3 {
   case 0:
     return Box.unit
   case 1:
     return Sphere.unit
   case 2:
     return Triangle(
-      a: .random(in: .unit), b: .random(in: .unit), c: .random(in: .unit))
+      a: .random(rand: &rand, in: .unit), b: .random(rand: &rand, in: .unit), c: .random(rand: &rand, in: .unit))
   default:
     fatalError()
   }
@@ -19,12 +19,13 @@ func randomCollisionShape() -> any CollisionShape {
 public func run(shapeCount: Int) -> Int {
   // Creates an empty world.
   var world = Scene()
+  var rand = Random(seed: 0xACE1)
 
   // Add random objects to the world.
   for _ in 0 ..< shapeCount {
     var n = Node()
-    n.translation = .random(in: worldBounds)
-    n.shape = randomCollisionShape()
+    n.translation = .random(rand: &rand, in: worldBounds)
+    n.shape = randomCollisionShape(rand: &rand)
     world.add(n)
   }
 
@@ -32,7 +33,8 @@ public func run(shapeCount: Int) -> Int {
   var nodes = Set(world.nodeIdentities)
   var occluded: [Scene.NodeIdentifier] = []
 
-  while let n = nodes.popFirst() {
+  for n in world.nodeIdentities {
+    if !nodes.contains(n) { continue }
     let s = world[n].shape!
     let r = Ray(
       origin: .zero,
