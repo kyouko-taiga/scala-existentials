@@ -9,7 +9,7 @@ let benchmarks = {
   let config = Benchmark.Configuration(
       metrics: [BenchmarkMetric.wallClock],
       //warmupIterations: 10,
-      maxDuration: .seconds(120)
+      maxDuration: .seconds(30)
       //maxIterations: 30
   )
   for shapeCount in shapeCounts {
