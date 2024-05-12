@@ -9,7 +9,7 @@ final class Random(var seed: Long):
     seed
 
   def nextDoubleBetween(min: Double, max: Double): Double =
-    val value: Double = nextLong() & Random.MAX_INT_AS_DOUBLE
+    val value = (nextLong() & Random.MAX_INT_AS_DOUBLE).toDouble
     val normalized = value / Random.MAX_INT_AS_DOUBLE
     val res = min + (max - min) * normalized
     //println(s"Random.nextDoubleBetween($min, $max) = $res")
