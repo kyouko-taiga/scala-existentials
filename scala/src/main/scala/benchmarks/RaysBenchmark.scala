@@ -1,12 +1,12 @@
 package benchmarks
 
 import scala.compiletime.uninitialized
-import scala.util.Random
 
 import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measurement, Mode as JMHMode, Param, Scope, Setup, State, Warmup}
 import java.util.concurrent.TimeUnit.SECONDS
 
 import rays.run
+import rays.math.Random
 
 @BenchmarkMode(Array(JMHMode.AverageTime))
 @Fork(value = 2)
@@ -19,7 +19,7 @@ class RaysBenchmark:
 
   var size: Int = uninitialized
 
-  given Random = Random(42)
+  given Random = Random(0xACE1)
 
   @Setup(Level.Trial)
   def setup =
