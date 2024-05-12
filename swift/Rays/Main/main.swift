@@ -1,4 +1,4 @@
-import Rays
+import RaysExistential
 
 func main() {
   guard CommandLine.arguments.count > 1, let shapeCount = Int(CommandLine.arguments[1]) else {
