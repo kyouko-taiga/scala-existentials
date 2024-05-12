@@ -1,5 +1,7 @@
 import Numerics
 
+import Lcg
+
 /// A 3-dimensional vector.
 ///
 /// 3D vectors are represented as distances along three orthogonal axes (x, y and z). They are used
@@ -165,7 +167,7 @@ public struct Vector3: Hashable {
   public static let unitZ = Vector3(x: 0.0, y: 0.0, z: 1.0)
 
   /// Returns a random point contained in `bounds`.
-  public static func random(rand: inout Random, in bounds: AxisAlignedBox) -> Vector3 {
+  public static func random(rand: inout Lcg.Random, in bounds: AxisAlignedBox) -> Vector3 {
     .init(
       x: rand.nextDoubleBetween(min: bounds.minX, max: bounds.maxX),
       y: rand.nextDoubleBetween(min: bounds.minY, max: bounds.maxY),

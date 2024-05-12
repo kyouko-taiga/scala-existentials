@@ -2,7 +2,7 @@
 
 import Benchmark
 import Foundation
-import Rays
+import RaysExistential
 
 let benchmarks = {
   let shapeCounts = [512, 1024, 2048]
@@ -14,7 +14,7 @@ let benchmarks = {
   )
   for shapeCount in shapeCounts {
     Benchmark("run(shapeCount:\(shapeCount))", configuration: config) { _ in
-      blackHole(Rays.run(shapeCount: shapeCount))
+      blackHole(RaysExistential.run(shapeCount: shapeCount))
     }
   }
 }

@@ -1,8 +1,10 @@
+import Lcg
+
 /// The bounds of the world in which the simulation occurs.
 let worldBounds = AxisAlignedBox(origin: .zero, dimensions: .init(x: 100, y: 100, z: 100))
 
 /// Returns a random collision shape that fits in a unit box centered at the origin.
-func randomCollisionShape(rand: inout Random) -> any CollisionShape {
+func randomCollisionShape(rand: inout Lcg.Random) -> any CollisionShape {
   switch rand.nextUInt64() % 3 {
   case 0:
     return Box.unit
@@ -19,7 +21,7 @@ func randomCollisionShape(rand: inout Random) -> any CollisionShape {
 public func run(shapeCount: Int) -> Int {
   // Creates an empty world.
   var world = Scene()
-  var rand = Random(seed: 0xACE1)
+  var rand = Lcg.Random(seed: 0xACE1)
 
   // Add random objects to the world.
   for _ in 0 ..< shapeCount {

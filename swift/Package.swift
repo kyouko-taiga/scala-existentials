@@ -12,34 +12,44 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "Rays",
+      name: "Lcg",
       dependencies: [
         .product(name: "Numerics", package: "swift-numerics"),
       ],
-      path: "Sources"
+      path: "Lcg/Lib"
     ),
     .testTarget(
-      name: "RaysTests",
-      dependencies: ["Rays"],
-      path: "Tests"
+      name: "LcgTests",
+      dependencies: ["Lcg"],
+      path: "Lcg/Tests"
+    ),
+    .target(
+      name: "RaysExistential",
+      dependencies: [
+        "Lcg",
+        .product(name: "Numerics", package: "swift-numerics"),
+      ],
+      path: "Rays/Existential"
     ),
     .executableTarget(
       name: "RaysMain",
-      dependencies: ["Rays"],
-      path: "Main"
+      dependencies: ["Lcg", "RaysExistential"],
+      path: "Rays/Main"
+    ),
+    .testTarget(
+      name: "RaysTests",
+      dependencies: ["Lcg", "RaysExistential"],
+      path: "Rays/Tests"
+    ),
+    .executableTarget(
+      name: "RaysBenchmark",
+      dependencies: [
+        "RaysExistential",
+        .product(name: "Benchmark", package: "package-benchmark"),
+      ],
+      path: "Benchmarks/RaysBenchmark",
+      plugins: [
+        .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
+      ]
     ),
   ])
-
-package.targets += [
-  .executableTarget(
-    name: "RaysBenchmark",
-    dependencies: [
-      "Rays",
-      .product(name: "Benchmark", package: "package-benchmark"),
-    ],
-    path: "Benchmarks/RaysBenchmark",
-    plugins: [
-      .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
-    ]
-  ),
-]
