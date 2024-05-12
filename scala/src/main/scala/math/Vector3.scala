@@ -3,7 +3,6 @@ package rays.math
 import rays.bounds.AxisAlignedBox
 
 import scala.math.sqrt
-import scala.util.Random
 
 /** A 3-dimensional vector.
   *
@@ -115,9 +114,9 @@ object Vector3:
   /** Returns a random point contained in `bounds`. */
   def randomIn(bounds: AxisAlignedBox)(using g: Random): Vector3 =
     Vector3(
-      g.between(bounds.minX, bounds.maxX),
-      g.between(bounds.minY, bounds.maxY),
-      g.between(bounds.minZ, bounds.maxZ))
+      g.nextDoubleBetween(bounds.minX, bounds.maxX),
+      g.nextDoubleBetween(bounds.minY, bounds.maxY),
+      g.nextDoubleBetween(bounds.minZ, bounds.maxZ))
 
 end Vector3
 

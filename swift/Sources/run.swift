@@ -35,15 +35,18 @@ public func run(shapeCount: Int) -> Int {
 
   for n in world.nodeIdentities {
     if !nodes.contains(n) { continue }
+    //print("Node: \(world[n].translation)")
     let s = world[n].shape!
     let r = Ray(
       origin: .zero,
       direction: (world.translation(of: n) + s.centroid).normalized)
+    //print("Ray: \(r)")
     let collisions = world.shoot(r, withCulling: false)
     for (m, _) in collisions {
       world[m].collisionMask = .zero
       nodes.remove(m)
     }
+    //print(collisions)
     occluded.append(contentsOf: collisions.dropFirst().map(\.node))
   }
 
