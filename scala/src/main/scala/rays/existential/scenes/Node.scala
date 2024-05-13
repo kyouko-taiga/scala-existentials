@@ -9,13 +9,13 @@ import rays.existential.shapes.CollisionShape
   * applied on a node because that could invalidate collision shapes represented by an idealized
   * mathematical object, such as a sphere. Instead, scaling should be applied on presentations.
   */
-final class Node(_translation: Vector3, _shape: Option[CollisionShape]):
+final class Node(_translation: Vector3, _shape: Option[Containing[CollisionShape]]):
 
   /** The presentation of the node, if any. */
   val presentation: Option[Node.Presentation] = None
 
   /** The collision shape of the node, if any. */
-  val shape: Option[CollisionShape] = _shape
+  val shape: Option[Containing[CollisionShape]] = _shape
 
   /** A mask for determining whether collision involving this node should be considered. */
   var collisionMask: Scene.CollisionMask = -1
