@@ -4,228 +4,164 @@ public protocol C {
   func f() -> Double
 }
 
-struct C1 {
+struct C1: C {
   let x: Double
-}
-extension C1: C {
   func f() -> Double { return x + 1.0 }
 }
 
-struct C2 {
+struct C2: C {
   let x: Double
-}
-extension C2: C {
-  func f() -> Double { return x + 2.0 }
+  func f() -> Double { return x + 2 }
 }
 
-struct C3 {
+struct C3: C {
   let x: Double
-}
-extension C3: C {
-  func f() -> Double { return x + 3.0 }
+  func f() -> Double { return x + 3 }
 }
 
-struct C4 {
+struct C4: C {
   let x: Double
-}
-extension C4: C {
-  func f() -> Double { return x + 4.0 }
+  func f() -> Double { return x + 4 }
 }
 
-struct C5 {
+struct C5: C {
   let x: Double
-}
-extension C5: C {
-  func f() -> Double { return x + 5.0 }
+  func f() -> Double { return x + 5 }
 }
 
-struct C6 {
+struct C6: C {
   let x: Double
-}
-extension C6: C {
-  func f() -> Double { return x + 6.0 }
+  func f() -> Double { return x + 6 }
 }
 
-struct C7 {
+struct C7: C {
   let x: Double
-}
-extension C7: C {
-  func f() -> Double { return x + 7.0 }
+  func f() -> Double { return x + 7 }
 }
 
-struct C8 {
+struct C8: C {
   let x: Double
-}
-extension C8: C {
-  func f() -> Double { return x + 8.0 }
+  func f() -> Double { return x + 8 }
 }
 
-struct C9 {
+struct C9: C {
   let x: Double
-}
-extension C9: C {
-  func f() -> Double { return x + 9.0 }
+  func f() -> Double { return x + 9 }
 }
 
-struct C10 {
+struct C10: C {
   let x: Double
-}
-extension C10: C {
-  func f() -> Double { return x + 10.0 }
+  func f() -> Double { return x + 10 }
 }
 
-struct C11 {
+struct C11: C {
   let x: Double
-}
-extension C11: C {
-  func f() -> Double { return x + 11.0 }
+  func f() -> Double { return x + 11 }
 }
 
-struct C12 {
+struct C12: C {
   let x: Double
-}
-extension C12: C {
-  func f() -> Double { return x + 12.0 }
+  func f() -> Double { return x + 12 }
 }
 
-struct C13 {
+struct C13: C {
   let x: Double
-}
-extension C13: C {
-  func f() -> Double { return x + 13.0 }
+  func f() -> Double { return x + 13 }
 }
 
-struct C14 {
+struct C14: C {
   let x: Double
-}
-extension C14: C {
-  func f() -> Double { return x + 14.0 }
+  func f() -> Double { return x + 14 }
 }
 
-struct C15 {
+struct C15: C {
   let x: Double
-}
-extension C15: C {
-  func f() -> Double { return x + 15.0 }
+  func f() -> Double { return x + 15 }
 }
 
-struct C16 {
+struct C16: C {
   let x: Double
-}
-extension C16: C {
-  func f() -> Double { return x + 16.0 }
+  func f() -> Double { return x + 16 }
 }
 
-struct C17 {
+struct C17: C {
   let x: Double
-}
-extension C17: C {
-  func f() -> Double { return x + 17.0 }
+  func f() -> Double { return x + 17 }
 }
 
-struct C18 {
+struct C18: C {
   let x: Double
-}
-extension C18: C {
-  func f() -> Double { return x + 18.0 }
+  func f() -> Double { return x + 18 }
 }
 
-struct C19 {
+struct C19: C {
   let x: Double
-}
-extension C19: C {
-  func f() -> Double { return x + 19.0 }
+  func f() -> Double { return x + 19 }
 }
 
-struct C20 {
+struct C20: C {
   let x: Double
-}
-extension C20: C {
-  func f() -> Double { return x + 20.0 }
+  func f() -> Double { return x + 20 }
 }
 
-struct C21 {
+struct C21: C {
   let x: Double
-}
-extension C21: C {
-  func f() -> Double { return x + 21.0 }
+  func f() -> Double { return x + 21 }
 }
 
-struct C22 {
+struct C22: C {
   let x: Double
-}
-extension C22: C {
-  func f() -> Double { return x + 22.0 }
+  func f() -> Double { return x + 22 }
 }
 
-struct C23 {
+struct C23: C {
   let x: Double
-}
-extension C23: C {
-  func f() -> Double { return x + 23.0 }
+  func f() -> Double { return x + 23 }
 }
 
-struct C24 {
+struct C24: C {
   let x: Double
-}
-extension C24: C {
-  func f() -> Double { return x + 24.0 }
+  func f() -> Double { return x + 24 }
 }
 
-struct C25 {
+struct C25: C {
   let x: Double
-}
-extension C25: C {
-  func f() -> Double { return x + 25.0 }
+  func f() -> Double { return x + 25 }
 }
 
-struct C26 {
+struct C26: C {
   let x: Double
-}
-extension C26: C {
-  func f() -> Double { return x + 26.0 }
+  func f() -> Double { return x + 26 }
 }
 
-struct C27 {
+struct C27: C {
   let x: Double
-}
-extension C27: C {
-  func f() -> Double { return x + 27.0 }
+  func f() -> Double { return x + 27 }
 }
 
-struct C28 {
+struct C28: C {
   let x: Double
-}
-extension C28: C {
-  func f() -> Double { return x + 28.0 }
+  func f() -> Double { return x + 28 }
 }
 
-struct C29 {
+struct C29: C {
   let x: Double
-}
-extension C29: C {
-  func f() -> Double { return x + 29.0 }
+  func f() -> Double { return x + 29 }
 }
 
-struct C30 {
+struct C30: C {
   let x: Double
-}
-extension C30: C {
-  func f() -> Double { return x + 30.0 }
+  func f() -> Double { return x + 30 }
 }
 
-struct C31 {
+struct C31: C {
   let x: Double
-}
-extension C31: C {
-  func f() -> Double { return x + 31.0 }
+  func f() -> Double { return x + 31 }
 }
 
-struct C32 {
+struct C32: C {
   let x: Double
-}
-extension C32: C {
-  func f() -> Double { return x + 32.0 }
+  func f() -> Double { return x + 32 }
 }
 
 public func randomAnyC(random: inout Lcg.Random, classesCount: UInt64 = 32) -> any C {
