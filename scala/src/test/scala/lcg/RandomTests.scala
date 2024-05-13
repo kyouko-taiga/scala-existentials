@@ -1,4 +1,4 @@
-package rays.math
+package lcg
 
 import java.lang.Long.toUnsignedString
 

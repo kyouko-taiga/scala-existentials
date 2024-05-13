@@ -24,6 +24,34 @@ let package = Package(
       path: "Lcg/Tests"
     ),
     .target(
+      name: "DispatchExistential",
+      dependencies: [
+        "Lcg",
+        .product(name: "Numerics", package: "swift-numerics"),
+      ],
+      path: "Dispatch/Existential"
+    ),
+    .target(
+      name: "DispatchInheritance",
+      dependencies: [
+        "Lcg",
+        .product(name: "Numerics", package: "swift-numerics"),
+      ],
+      path: "Dispatch/Inheritance"
+    ),
+    .executableTarget(
+      name: "DispatchBenchmark",
+      dependencies: [
+        "DispatchInheritance",
+        "DispatchExistential",
+        .product(name: "Benchmark", package: "package-benchmark"),
+      ],
+      path: "Benchmarks/DispatchBenchmark",
+      plugins: [
+        .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
+      ]
+    ),
+    .target(
       name: "RaysExistential",
       dependencies: [
         "Lcg",

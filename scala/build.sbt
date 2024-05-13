@@ -9,6 +9,7 @@ lazy val root = project
 
 Compile / scalacOptions ++= Seq(
   "-deprecation",
+  "-language:experimental.modularity"
 )
 
 libraryDependencies += "org.scalameta" %% "munit" % "1.0.0-RC1" % Test
