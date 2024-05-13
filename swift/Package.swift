@@ -59,6 +59,14 @@ let package = Package(
       ],
       path: "Rays/Existential"
     ),
+    .target(
+      name: "RaysInheritance",
+      dependencies: [
+        "Lcg",
+        .product(name: "Numerics", package: "swift-numerics"),
+      ],
+      path: "Rays/Inheritance"
+    ),
     .executableTarget(
       name: "RaysMain",
       dependencies: ["Lcg", "RaysExistential"],
@@ -66,7 +74,7 @@ let package = Package(
     ),
     .testTarget(
       name: "RaysTests",
-      dependencies: ["Lcg", "RaysExistential"],
+      dependencies: ["Lcg", "RaysExistential", "RaysInheritance"],
       path: "Rays/Tests"
     ),
     .executableTarget(
