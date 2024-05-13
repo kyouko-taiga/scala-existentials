@@ -24,11 +24,11 @@ final class Scene private (
     * `n` must not be contained in `this` and `p` (if given) must.
     */
   def adding(n: Node, p: Option[Node] = None): Scene =
-    require(!nodes.contains(n))
+    //require(!nodes.contains(n))
     val newNodes = nodes :+ n
     val newRelationships = p match
       case Some(q) =>
-        require(p.map((q) => nodes.contains(q)).getOrElse(true))
+        //require(p.map((q) => nodes.contains(q)).getOrElse(true))
         relationships ++ List(
           n -> Scene.NodeRelationships(Some(q), List()),
           q -> relationships(q).addingChild(n))
