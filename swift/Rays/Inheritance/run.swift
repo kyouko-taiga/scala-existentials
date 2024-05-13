@@ -33,7 +33,7 @@ public func run(shapeCount: Int) -> Int {
 
   // Shoot rays at all objects from the origin to find those that are (partially) occluded.
   var nodes = Set(world.nodeIdentities)
-  var occluded: [Scene.NodeIdentifier] = []
+  var occludedCount = 0
 
   for n in world.nodeIdentities {
     if !nodes.contains(n) { continue }
@@ -49,8 +49,8 @@ public func run(shapeCount: Int) -> Int {
       nodes.remove(m)
     }
     //print(collisions)
-    occluded.append(contentsOf: collisions.dropFirst().map(\.node))
+    occludedCount += collisions.count - 1
   }
 
-  return occluded.count
+  return occludedCount
 }

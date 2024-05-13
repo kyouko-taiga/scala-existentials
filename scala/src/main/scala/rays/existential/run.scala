@@ -42,7 +42,7 @@ def run(size: Int): Int =
 
   // Shoot rays at all objects from the origin to find those that are (partially) occluded.
   var nodes = Set.from(world.nodes)
-  var occluded = List[Node]()
+  var occludedCount: Int = 0
 
   for n <- world.nodes if nodes(n) do
     //println(s"Node: ${n.translation}")
@@ -53,7 +53,6 @@ def run(size: Int): Int =
     for (m, _) <- collisions do
       m.collisionMask = 0
       nodes -= m
-    //println(collisions)
-    occluded ++= collisions.drop(1).map((c) => c(0))
+    occludedCount += collisions.length - 1
 
-  occluded.length
+  occludedCount
