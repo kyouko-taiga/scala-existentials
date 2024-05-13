@@ -14,13 +14,15 @@ let benchmarks = {
       //maxIterations: 30
   )
   for shapeCount in shapeCounts {
-    Benchmark("run(shapeCount:\(shapeCount))", configuration: config) { _ in
-      blackHole(RaysExistential.run(shapeCount: shapeCount))
+    Benchmark("runExistential(shapeCount:\(shapeCount))", configuration: config) { _ in
+      var world = RaysExistential.initialWorld(shapeCount: shapeCount)
+      blackHole(RaysExistential.run(world: &world))
     }
   }
   for shapeCount in shapeCounts {
-    Benchmark("run(shapeCount:\(shapeCount))", configuration: config) { _ in
-      blackHole(RaysInheritance.run(shapeCount: shapeCount))
+    Benchmark("runInheritance(shapeCount:\(shapeCount))", configuration: config) { _ in
+      var world = RaysInheritance.initialWorld(shapeCount: shapeCount)
+      blackHole(RaysInheritance.run(world: &world))
     }
   }
 }

@@ -23,7 +23,10 @@ class RandomTests extends munit.FunSuite:
     2048 -> 155
   )
 
-  for (name, run) <- List(("Existential", rays.existential.run), ("Inheritance", rays.inheritance.run)) do
-    for (size, expected) <- testCases do
-      test(s"run$name($size)"):
-        assertEquals(run(size), expected)
+  for (shapeCount, expected) <- testCases do
+    test(s"runExistential($shapeCount)"):
+      val world = existential.initialWorld(shapeCount)
+      assertEquals(existential.run(world), expected)
+    test(s"runInheritance($shapeCount)"):
+      val world = inheritance.initialWorld(shapeCount)
+      assertEquals(inheritance.run(world), expected)

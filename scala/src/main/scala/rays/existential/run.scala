@@ -29,7 +29,7 @@ def randomCollisionShape(using g: Random): Containing[CollisionShape] =
     case n =>
       throw new RuntimeException("unreachable: " + n)
 
-def run(size: Int): Int =
+def initialWorld(size: Int): Scene =
   given Random = Random(0xACE1)
 
   // Create an empty world.
@@ -40,6 +40,9 @@ def run(size: Int): Int =
     val n = Node(Vector3.randomIn(worldBounds), Some(randomCollisionShape))
     world = world.adding(n)
 
+  world
+
+def run(world: Scene): Int =
   // Shoot rays at all objects from the origin to find those that are (partially) occluded.
   var nodes = Set.from(world.nodes)
   var occludedCount: Int = 0

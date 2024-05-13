@@ -18,8 +18,9 @@ func randomCollisionShape(rand: inout Lcg.Random) -> any CollisionShape {
   }
 }
 
-public func run(shapeCount: Int) -> Int {
-  // Creates an empty world.
+
+public func initialWorld(shapeCount: Int) -> Scene {
+   // Creates an empty world.
   var world = Scene()
   var rand = Lcg.Random(seed: 0xACE1)
 
@@ -30,7 +31,10 @@ public func run(shapeCount: Int) -> Int {
     n.shape = randomCollisionShape(rand: &rand)
     world.add(n)
   }
+  return world
+}
 
+public func run(world: inout Scene) -> Int {
   // Shoot rays at all objects from the origin to find those that are (partially) occluded.
   var nodes = Set(world.nodeIdentities)
   var occludedCount = 0
