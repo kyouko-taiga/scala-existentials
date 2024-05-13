@@ -15,7 +15,7 @@ import scala.collection.mutable
   * @param relationships The relationships between the nodes in the scene.
   */
 final class Scene private (
-    val nodes: List[Node],
+    val nodes: Vector[Node],
     val relationships: Map[Node, Scene.NodeRelationships]
 ):
 
@@ -37,17 +37,14 @@ final class Scene private (
     new Scene(newNodes, newRelationships)
 
 
-  extension [T](self: List[T])
-    def -(e: T): List[T] =
-      self match
-        case h :: t => if h == e then t else h :: (t - e)
-        case Nil => Nil
+  extension [T](self: Vector[T])
+    def -(e: T): Vector[T] = self.filter((a) => a != e)
 
   /** Returns a copy of `this` in which `n` and its children have been removed. */
   def removing(n: Node): Scene =
     def loop(
-        children: List[Node], ns: List[Node], rs: Map[Node, Scene.NodeRelationships]
-    ): (List[Node], Map[Node, Scene.NodeRelationships]) =
+        children: List[Node], ns: Vector[Node], rs: Map[Node, Scene.NodeRelationships]
+    ): (Vector[Node], Map[Node, Scene.NodeRelationships]) =
       children match
         case (h :: t) =>
           val cs = rs(h).children
@@ -143,6 +140,6 @@ object Scene:
 
   /** Creates an empty scene. */
   def apply(): Scene =
-    new Scene(List(), Map())
+    new Scene(Vector(), Map())
 
 end Scene
