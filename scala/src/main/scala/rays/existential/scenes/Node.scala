@@ -1,7 +1,7 @@
-package rays.scenes
+package rays.existential.scenes
 
-import rays.math.{Quaternion, Vector3}
-import rays.shapes.CollisionShape
+import rays.existential.math.{Quaternion, Vector3}
+import rays.existential.shapes.CollisionShape
 
 /** An object to render as part of a scene.
   *

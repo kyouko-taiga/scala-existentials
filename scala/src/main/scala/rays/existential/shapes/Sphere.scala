@@ -1,6 +1,6 @@
-package rays.shapes
+package rays.existential.shapes
 
-import rays.math.{solveQuatratic, Ray, Vector3}
+import rays.existential.math.{solveQuatratic, Ray, Vector3}
 
 /** A sphere centered at the origin.
   *

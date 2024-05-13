@@ -1,4 +1,4 @@
-package rays.math
+package rays.inheritance.math
 
 import scala.math.{abs, acos, asin, atan2, sqrt, cos, sin, Pi}
 

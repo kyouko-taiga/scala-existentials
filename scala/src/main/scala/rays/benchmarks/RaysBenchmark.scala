@@ -1,11 +1,10 @@
+package rays
 package benchmarks
 
 import scala.compiletime.uninitialized
 
 import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measurement, Mode as JMHMode, Param, Scope, Setup, State, Warmup}
 import java.util.concurrent.TimeUnit.SECONDS
-
-import rays.run
 
 @BenchmarkMode(Array(JMHMode.AverageTime))
 @Fork(value = 2)
@@ -23,4 +22,7 @@ class RaysBenchmark:
     size = sizeString.toInt
 
   @Benchmark
-  def benchmark: Unit = run(size)
+  def benchmarkExistential: Unit = existential.run(size)
+
+  @Benchmark
+  def benchmarkInheritance: Unit = inheritance.run(size)

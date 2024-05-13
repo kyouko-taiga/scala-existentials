@@ -1,9 +1,9 @@
-package rays
+package rays.inheritance
 
-import rays.bounds.AxisAlignedBox
-import rays.math.{Ray, Vector3}
-import rays.scenes.{Node, Scene}
-import rays.shapes.{Box, CollisionShape, Sphere, Triangle}
+import rays.inheritance.bounds.AxisAlignedBox
+import rays.inheritance.math.{Ray, Vector3}
+import rays.inheritance.scenes.{Node, Scene}
+import rays.inheritance.shapes.{Box, CollisionShape, Sphere, Triangle}
 
 import lcg.Random
 

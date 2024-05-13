@@ -1,6 +1,6 @@
-package rays.shapes
+package rays.existential.shapes
 
-import rays.math.{Ray, Vector3}
+import rays.existential.math.{Ray, Vector3}
 
 /** A collision shape, defining a volume for collision testing. */
 trait CollisionShape:

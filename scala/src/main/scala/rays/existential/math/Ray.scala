@@ -1,4 +1,4 @@
-package rays.math
+package rays.existential.math
 
 /** A half-line that extends indefinitely in one direction.
   *
