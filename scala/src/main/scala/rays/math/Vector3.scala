@@ -2,6 +2,8 @@ package rays.math
 
 import rays.bounds.AxisAlignedBox
 
+import lcg.Random
+
 import scala.math.sqrt
 
 /** A 3-dimensional vector.

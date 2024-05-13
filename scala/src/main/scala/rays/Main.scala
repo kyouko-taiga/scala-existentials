@@ -1,9 +1,11 @@
 package rays
 
 import rays.bounds.AxisAlignedBox
-import rays.math.{Ray, Vector3, Random}
+import rays.math.{Ray, Vector3}
 import rays.scenes.{Node, Scene}
 import rays.shapes.{Box, CollisionShape, Sphere, Triangle}
+
+import lcg.Random
 
 import java.lang.Long.remainderUnsigned
 
