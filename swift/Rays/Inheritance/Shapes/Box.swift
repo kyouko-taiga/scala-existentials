@@ -1,6 +1,5 @@
 /// A rectangular cuboid centered at the origin.
-public struct Box: Hashable {
-
+public class Box: Hashable, CollisionShape {
   /// The dimensions of the box.
   public var dimensions: Vector3
 
@@ -37,10 +36,6 @@ public struct Box: Hashable {
   /// A box having sides of lenght 1.
   public static var unit = Box(dimensions: .unitScale)
 
-}
-
-extension Box: CollisionShape {
-
   public var origin: Vector3 {
     .zero
   }
@@ -65,6 +60,13 @@ extension Box: CollisionShape {
     return (n < f) ? n : nil
   }
 
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(dimensions)
+  }
+  
+  public static func == (lhs: Box, rhs: Box) -> Bool {
+    return lhs.dimensions == rhs.dimensions
+  }
 }
 
 extension Box: CustomStringConvertible {
