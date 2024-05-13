@@ -1,5 +1,5 @@
 /// A polygon defined by three vertices.
-public struct Triangle: Hashable {
+public class Triangle: Hashable, CollisionShape {
 
   /// The triangle's first vertex.
   public var a: Vector3
@@ -16,10 +16,6 @@ public struct Triangle: Hashable {
     self.b = b
     self.c = c
   }
-
-}
-
-extension Triangle: CollisionShape {
 
   public var origin: Vector3 {
     .zero
@@ -56,6 +52,16 @@ extension Triangle: CollisionShape {
     guard (v >= 0.0) && (v <= 1.0) else { return nil }
 
     return ac.dot(qvec) * idet
+  }
+
+  public static func == (lhs: Triangle, rhs: Triangle) -> Bool {
+    return lhs.a == rhs.a && lhs.b == rhs.b && lhs.c == rhs.c
+  }
+
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(a)
+    hasher.combine(b)
+    hasher.combine(c)
   }
 
 }

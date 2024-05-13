@@ -81,6 +81,7 @@ let package = Package(
       name: "RaysBenchmark",
       dependencies: [
         "RaysExistential",
+        "RaysInheritance",
         .product(name: "Benchmark", package: "package-benchmark"),
       ],
       path: "Benchmarks/RaysBenchmark",

@@ -1,5 +1,5 @@
 /// A collision shape with a lazy rotation.
-public struct Rotated<S: CollisionShape> {
+public class Rotated<S: CollisionShape>: CollisionShape {
 
   /// The vertices of `self` sans translation.
   public let base: S
@@ -17,10 +17,6 @@ public struct Rotated<S: CollisionShape> {
   public func rotated(by alpha: Quaternion) -> Rotated<S> {
     .init(base, by: rotation * alpha)
   }
-
-}
-
-extension Rotated: CollisionShape {
 
   public var origin: Vector3 {
     base.origin

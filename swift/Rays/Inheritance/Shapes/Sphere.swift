@@ -1,5 +1,5 @@
 /// A sphere centered at the origin.
-public struct Sphere {
+public class Sphere: CollisionShape {
 
   /// The sphere's radius.
   public var radius: Double
@@ -11,10 +11,6 @@ public struct Sphere {
 
   /// A sphere with a diameter of 1.
   public static var unit = Sphere(radius: 0.5)
-
-}
-
-extension Sphere: CollisionShape {
 
   public var origin: Vector3 {
     .zero

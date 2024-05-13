@@ -1,5 +1,5 @@
 /// A collision shape, defining a volume for collision testing.
-public protocol CollisionShape {
+public protocol CollisionShape: AnyObject {
 
   /// The origin of the shape's local coordinate space.
   var origin: Vector3 { get }

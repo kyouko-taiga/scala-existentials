@@ -1,5 +1,5 @@
 /// A collision shape with a lazy translation.
-public struct Translated<S: CollisionShape> {
+public class Translated<S: CollisionShape>: CollisionShape {
 
   /// The vertices of `self` sans translation.
   public let base: S
@@ -17,10 +17,6 @@ public struct Translated<S: CollisionShape> {
   public func translated(by delta: Vector3) -> Translated<S> {
     .init(base, by: translation + delta)
   }
-
-}
-
-extension Translated: CollisionShape {
 
   public var origin: Vector3 {
     base.origin
