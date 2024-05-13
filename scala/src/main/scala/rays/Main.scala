@@ -33,9 +33,7 @@ def run(size: Int)(using Random): Int =
 
   // Add random objects to the world.
   for _ <- 0 until size do
-    val n = Node()
-    n.translation = Vector3.randomIn(worldBounds)
-    n.shape = Some(randomCollisionShape)
+    val n = Node(Vector3.randomIn(worldBounds), Some(randomCollisionShape))
     world = world.adding(n)
 
   // Shoot rays at all objects from the origin to find those that are (partially) occluded.
