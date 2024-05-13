@@ -55,7 +55,7 @@ final case class AxisAlignedBox(origin: Vector3, dimensions: Vector3):
 object AxisAlignedBox:
 
   /** A cube centered at the origin and having sides of lenght 1. */
-  final val unit = AxisAlignedBox(Vector3.zero, Vector3.unitScale)
+  final val unit = AxisAlignedBox.centeredAt(Vector3.zero, Vector3.unitScale)
 
   def centeredAt(center: Vector3, dimensions: Vector3 = Vector3.unitScale): AxisAlignedBox =
     val origin = Vector3(

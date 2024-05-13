@@ -118,7 +118,7 @@ public struct AxisAlignedBox: Hashable {
   }
 
   /// A cube centered at the origin and having sides of lenght 1.
-  public static var unit = AxisAlignedBox(centeredAt: .zero, dimensions: .unitScale)
+  public static let unit = AxisAlignedBox(centeredAt: .zero, dimensions: .unitScale)
 
 }
 
