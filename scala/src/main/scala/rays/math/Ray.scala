@@ -13,6 +13,6 @@ final case class Ray(origin: Vector3, direction: Vector3):
 
   /** Returns `self` rotated by `alpha`. */
   def rotatedBy(alpha: Quaternion): Ray =
-    Ray(origin, direction + (direction * alpha))
+    Ray(origin, direction * alpha)
 
 end Ray
