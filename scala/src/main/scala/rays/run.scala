@@ -49,7 +49,7 @@ def run(size: Int): Int =
     //println(s"Ray: $r")
     val collisions = world.shoot(r, -1, false)
     for (m, _) <- collisions do
-      n.collisionMask = 0
+      m.collisionMask = 0
       nodes -= m
     //println(collisions)
     occluded ++= collisions.drop(1).map((c) => c(0))
