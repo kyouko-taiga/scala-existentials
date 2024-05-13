@@ -12,17 +12,15 @@ import java.util.concurrent.TimeUnit.SECONDS
 @Measurement(iterations = 4, time = 5, timeUnit = SECONDS)
 @State(Scope.Benchmark)
 class RaysBenchmark:
-  @Param(Array("512", "1024", "2048"))
-  var sizeString: String = uninitialized
-
-  var size: Int = uninitialized
-
-  @Setup(Level.Trial)
-  def setup =
-    size = sizeString.toInt
+  @Param(Array("512", "2048"))
+  var size: String = uninitialized
 
   @Benchmark
-  def benchmarkExistential: Unit = existential.run(size)
+  def benchmarkExistential: Unit =
+    val world = existential.initialWorld(size.toInt)
+    existential.run(world)
 
   @Benchmark
-  def benchmarkInheritance: Unit = inheritance.run(size)
+  def benchmarkInheritance: Unit =
+    val world = inheritance.initialWorld(size.toInt)
+    inheritance.run(world)

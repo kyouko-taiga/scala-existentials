@@ -26,9 +26,12 @@ class RunTests: XCTestCase {
       2048: 155
     ]
 
-    for (input, expectedOutput) in testCases {
-      XCTAssertEqual(RaysExistential.run(shapeCount: input), expectedOutput, "Failed for input \(input)")
-      XCTAssertEqual(RaysInheritance.run(shapeCount: input), expectedOutput, "Failed for input \(input)")
+    for (shapeCount, expectedOutput) in testCases {
+      var worldExistential = RaysExistential.initialWorld(shapeCount: shapeCount)
+      XCTAssertEqual(RaysExistential.run(world: &worldExistential), expectedOutput, "Failed for input \(shapeCount)")
+
+      var worldInheritance = RaysInheritance.initialWorld(shapeCount: shapeCount)
+      XCTAssertEqual(RaysInheritance.run(world: &worldInheritance), expectedOutput, "Failed for input \(shapeCount)")
     }
   }
 }

@@ -5,7 +5,8 @@ func main() {
       print("Please provide the shape count as a command-line argument.")
       return
   }
-  let res = run(shapeCount: shapeCount)
+  var world = initialWorld(shapeCount: shapeCount)
+  let res = run(world: &world)
   print("Result: \(res)")
 }
 
