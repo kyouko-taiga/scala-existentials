@@ -51,6 +51,8 @@ final class Angle private (val radians: Double):
   override def hashCode(): Int =
     radians.hashCode()
 
+  override def toString(): String = s"Angle(${radians})"
+
 object Angle:
 
   /** An angle equal to zero. */
