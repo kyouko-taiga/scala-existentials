@@ -1,6 +1,6 @@
-package rays.shapes
+package rays.inheritance.shapes
 
-import rays.math.{Ray, Vector3}
+import rays.inheritance.math.{Ray, Vector3}
 import scala.math.abs
 
 /** A rectangular cuboid centered at the origin.

@@ -1,4 +1,4 @@
-package rays.math
+package rays.existential.math
 
 import scala.math.sqrt
 

@@ -1,4 +1,4 @@
-package rays
+package rays.inheritance
 
 import lcg.Random
 

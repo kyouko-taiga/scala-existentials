@@ -1,6 +1,6 @@
-package rays.math
+package rays.existential.math
 
-import rays.bounds.AxisAlignedBox
+import rays.existential.bounds.AxisAlignedBox
 
 import lcg.Random
 

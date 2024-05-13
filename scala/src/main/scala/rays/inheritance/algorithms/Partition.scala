@@ -1,4 +1,4 @@
-package rays.algorithms
+package rays.inheritance.algorithms
 
 import scala.collection.mutable
 

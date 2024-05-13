@@ -1,6 +1,6 @@
-package rays.bounds
+package rays.inheritance.bounds
 
-import rays.math.Vector3
+import rays.inheritance.math.Vector3
 import scala.math.abs
 
 /** The location and dimensions of a box (a.k.a. rectangular cuboid).

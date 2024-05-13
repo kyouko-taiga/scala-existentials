@@ -6,7 +6,7 @@ import scala.compiletime.uninitialized
 import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measurement, Mode as JMHMode, Param, Scope, Setup, State, Warmup}
 import java.util.concurrent.TimeUnit.SECONDS
 
-import rays.run
+import rays.inheritance.run
 import lcg.Random
 
 @BenchmarkMode(Array(JMHMode.Throughput))

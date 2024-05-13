@@ -1,7 +1,7 @@
-package rays.scenes
+package rays.inheritance.scenes
 
-import rays.algorithms.partitioningIndex
-import rays.math.{Quaternion, Ray, Vector3}
+import rays.inheritance.algorithms.partitioningIndex
+import rays.inheritance.math.{Quaternion, Ray, Vector3}
 import scala.collection.mutable
 
 /** A collection of objects to render organized in a tree.
