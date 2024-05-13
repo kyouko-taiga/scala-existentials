@@ -6,7 +6,6 @@ import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measu
 import java.util.concurrent.TimeUnit.SECONDS
 
 import rays.run
-import lcg.Random
 
 @BenchmarkMode(Array(JMHMode.AverageTime))
 @Fork(value = 2)
@@ -18,8 +17,6 @@ class RaysBenchmark:
   var sizeString: String = uninitialized
 
   var size: Int = uninitialized
-
-  given Random = Random(0xACE1)
 
   @Setup(Level.Trial)
   def setup =

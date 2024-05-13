@@ -27,7 +27,9 @@ def randomCollisionShape(using g: Random): CollisionShape =
     case n =>
       throw new RuntimeException("unreachable: " + n)
 
-def run(size: Int)(using Random): Int =
+def run(size: Int): Int =
+  given Random = Random(0xACE1)
+
   // Create an empty world.
   var world = Scene()
 
@@ -55,5 +57,5 @@ def run(size: Int)(using Random): Int =
   occluded.length
 
 @main def Main(size: Int): Unit =
-  val res = run(size)(using Random(0xACE1))
+  val res = run(size)
   println(s"Occluded $res objects.")

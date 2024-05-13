@@ -60,8 +60,8 @@ class DispatchBenchmark:
     var sum: Double = 0
     var i: Int = 0
     while i < valuesCountInt do
-      val shape = existentialValues(i)
-      sum = sum + shape.f()
+      val c = existentialValues(i)
+      sum = sum + c.f()
       i += 1
     sum
 
