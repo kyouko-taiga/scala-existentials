@@ -7,7 +7,7 @@ import scala.math.abs
   *
   * @param dimensions The dimensions of the box.
   */
-final case class Box(dimensions: Vector3) extends CollisionShape:
+final case class Box(dimensions: Vector3):
 
   /** The box' absolute dimension along the x-axis. */
   def width: Double = abs(dimensions.x)
@@ -28,25 +28,28 @@ final case class Box(dimensions: Vector3) extends CollisionShape:
   def scaledBy(factors: Vector3): Box =
     Box(dimensions * factors)
 
-  def origin: Vector3 = Vector3.zero
-
-  def centroid: Vector3 = Vector3.zero
-
-  def collisionDistance(ray: Ray, cullingIsEnabled: Boolean): Option[Double] =
-    val tmin = (min - ray.origin) / ray.direction
-    val tmax = (max - ray.origin) / ray.direction
-
-    val t = tmin.combined(tmax)(scala.math.min)
-    val n = scala.math.max(scala.math.max(t.x, t.y), t.z)
-
-    val u = tmax.combined(tmax)(scala.math.max)
-    val f = scala.math.min(scala.math.min(u.x, u.y), u.z)
-
-    if (n < f) then Some(n) else None
-
   /** A string representation of `this`. */
   override def toString: String =
     s"Box(dimensions: ${dimensions})"
+
+given Box is CollisionShape:
+  extension (s: Box)
+    def origin: Vector3 = Vector3.zero
+
+    def centroid: Vector3 = Vector3.zero
+
+    def collisionDistance(ray: Ray, cullingIsEnabled: Boolean): Option[Double] =
+      val tmin = (s.min - ray.origin) / ray.direction
+      val tmax = (s.max - ray.origin) / ray.direction
+
+      val t = tmin.combined(tmax)(scala.math.min)
+      val n = scala.math.max(scala.math.max(t.x, t.y), t.z)
+
+      val u = tmax.combined(tmax)(scala.math.max)
+      val f = scala.math.min(scala.math.min(u.x, u.y), u.z)
+
+      if (n < f) then Some(n) else None
+
 
 object Box:
 

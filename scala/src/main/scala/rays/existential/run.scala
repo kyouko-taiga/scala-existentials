@@ -13,17 +13,19 @@ import java.lang.Long.remainderUnsigned
 val worldBounds = AxisAlignedBox(Vector3.zero, Vector3(100, 100, 100))
 
 /** Returns a random collision shape that fits in a unit box centered at the origin. */
-def randomCollisionShape(using g: Random): CollisionShape =
+def randomCollisionShape(using g: Random): Containing[CollisionShape] =
+  import rays.existential.shapes.given
+
   remainderUnsigned(g.nextLong(), 3) match
     case 0 =>
-      Box.unit
+      Containing(Box.unit)
     case 1 =>
-      Sphere.unit
+      Containing(Sphere.unit)
     case 2 =>
-      Triangle(
+      Containing(Triangle(
         Vector3.randomIn(AxisAlignedBox.unit),
         Vector3.randomIn(AxisAlignedBox.unit),
-        Vector3.randomIn(AxisAlignedBox.unit))
+        Vector3.randomIn(AxisAlignedBox.unit)))
     case n =>
       throw new RuntimeException("unreachable: " + n)
 
