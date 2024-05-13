@@ -1,72 +1,34 @@
 import XCTest
 @testable import RaysExistential
+@testable import RaysInheritance
 
 class RunTests: XCTestCase {
-    func testRun192() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 192), 1)
-    }
+  func test() {
+    continueAfterFailure = true
 
-    func testRun193() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 193), 2)
-    }
+    let testCases = [
+      192: 1,
+      193: 2,
+      256: 2,
+      512: 12,
+      525: 13,
+      550: 14,
+      575: 15,
+      587: 15,
+      592: 15,
+      596: 15,
+      597: 16,
+      598: 16,
+      600: 16,
+      700: 21,
+      768: 26,
+      1024: 49,
+      2048: 155
+    ]
 
-    func testRun256() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 256), 2)
+    for (input, expectedOutput) in testCases {
+      XCTAssertEqual(RaysExistential.run(shapeCount: input), expectedOutput, "Failed for input \(input)")
+      XCTAssertEqual(RaysInheritance.run(shapeCount: input), expectedOutput, "Failed for input \(input)")
     }
-
-    func testRun512() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 512), 12)
-    }
-
-    func testRun525() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 525), 13)
-    }
-
-    func testRun550() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 550), 14)
-    }
-
-    func testRun575() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 575), 15)
-    }
-
-    func testRun587() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 587), 15)
-    }
-
-    func testRun592() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 592), 15)
-    }
-
-    func testRun596() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 596), 15)
-    }
-
-    func testRun597() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 597), 16)
-    }
-
-    func testRun598() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 598), 16)
-    }
-
-    func testRun600() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 600), 16)
-    }
-
-    func testRun700() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 700), 21)
-    }
-
-    func testRun768() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 768), 26)
-    }
-
-    func testRun1024() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 1024), 49)
-    }
-
-    func testRun2048() {
-        XCTAssertEqual(RaysExistential.run(shapeCount: 2048), 155)
-    }
+  }
 }
