@@ -44,31 +44,31 @@ class RandomTests extends munit.FunSuite {
   }
 
   test("run(597)") {
-    assertEquals(run(597), 16) // failing
+    assertEquals(run(597), 16)
   }
 
   test("run(598)") {
-    assertEquals(run(598), 16) // failing
+    assertEquals(run(598), 16)
   }
 
   test("run(600)") {
-    assertEquals(run(600), 16) // failing
+    assertEquals(run(600), 16)
   }
 
   test("run(700)") {
-    assertEquals(run(700), 21) // failing
+    assertEquals(run(700), 21)
   }
 
   test("run(768)") {
-    assertEquals(run(768), 26) // failing
+    assertEquals(run(768), 26)
   }
 
   test("run(1024)") {
-    assertEquals(run(1024), 49) // failing
+    assertEquals(run(1024), 49)
   }
 
   test("run(2048)") {
-    assertEquals(run(2048), 155) // failing
+    assertEquals(run(2048), 155)
   }
 
 }
