@@ -10,9 +10,9 @@ let benchmarks: () -> () = {
   let config = Benchmark.Configuration(
       metrics: [BenchmarkMetric.wallClock],
       timeUnits: BenchmarkTimeUnits.microseconds,
-      warmupIterations: 10,
+      warmupIterations: 1000,
       maxDuration: .seconds(600),
-      maxIterations: 10
+      maxIterations: 1000
   )
   for classCount in classCounts {
     let inheritanceValues: [DispatchInheritance.C] =
