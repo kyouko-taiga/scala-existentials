@@ -3,23 +3,24 @@ package benchmarks
 
 import scala.compiletime.uninitialized
 
-import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measurement, Mode as JMHMode, Param, Scope, Setup, State, Warmup}
-import java.util.concurrent.TimeUnit.SECONDS
+import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measurement, Mode as JMHMode, OutputTimeUnit, Param, Scope, Setup, State, Warmup}
+import java.util.concurrent.TimeUnit.{MICROSECONDS, SECONDS}
 
 import rays.inheritance.run
 import lcg.Random
 
-@BenchmarkMode(Array(JMHMode.Throughput))
+@BenchmarkMode(Array(JMHMode.SingleShotTime))
 @Fork(value = 1)
-@Warmup(iterations = 2, time = 5, timeUnit = SECONDS)
-@Measurement(iterations = 3, time = 5, timeUnit = SECONDS)
+@Warmup(iterations = 10, time = 1, timeUnit = SECONDS)
+@Measurement(iterations = 10, time = 1, timeUnit = SECONDS)
 @State(Scope.Benchmark)
+@OutputTimeUnit(MICROSECONDS)
 class DispatchBenchmark:
   @Param(Array("2", "4", "6", "8", "10", "12", "14", "16", "18", "20"))
   var classCount: String = uninitialized
   var classCountInt: Int = uninitialized
 
-  @Param(Array("100"))
+  @Param(Array("1000000"))
   var valueCount: String = uninitialized
   var valueCountInt: Int = uninitialized
 
@@ -43,6 +44,7 @@ class DispatchBenchmark:
       inheritanceValues = Array.tabulate(valueCountInt)(i => inheritance.randomC(i % classCountInt, i))
     }
 
+  /*
   @Benchmark
   def benchmarkCases =
     var sum: Double = 0
@@ -51,6 +53,7 @@ class DispatchBenchmark:
       sum = sum + casesValues(i).f()
       i += 1
     sum
+  */
 
   @Benchmark
   def benchmarkExistential =
