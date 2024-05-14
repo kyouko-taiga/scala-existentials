@@ -7,38 +7,38 @@ import java.lang.Long.remainderUnsigned
 sealed trait C:
   def f(): Double =
     this match
-      case c: C1 => c.x + 1.0
-      case c: C2 => c.x + 2.0
-      case c: C3 => c.x + 3.0
-      case c: C4 => c.x + 4.0
-      case c: C5 => c.x + 5.0
-      case c: C6 => c.x + 6.0
-      case c: C7 => c.x + 7.0
-      case c: C8 => c.x + 8.0
-      case c: C9 => c.x + 9.0
-      case c: C10 => c.x + 10.0
-      case c: C11 => c.x + 11.0
-      case c: C12 => c.x + 12.0
-      case c: C13 => c.x + 13.0
-      case c: C14 => c.x + 14.0
-      case c: C15 => c.x + 15.0
-      case c: C16 => c.x + 16.0
-      case c: C17 => c.x + 17.0
-      case c: C18 => c.x + 18.0
-      case c: C19 => c.x + 19.0
-      case c: C20 => c.x + 20.0
-      case c: C21 => c.x + 21.0
-      case c: C22 => c.x + 22.0
-      case c: C23 => c.x + 23.0
-      case c: C24 => c.x + 24.0
-      case c: C25 => c.x + 25.0
-      case c: C26 => c.x + 26.0
-      case c: C27 => c.x + 27.0
-      case c: C28 => c.x + 28.0
-      case c: C29 => c.x + 29.0
-      case c: C30 => c.x + 30.0
-      case c: C31 => c.x + 31.0
-      case c: C32 => c.x + 32.0
+      case c: C1 => c.x +  401.0
+      case c: C2 => c.x +  402.0
+      case c: C3 => c.x +  403.0
+      case c: C4 => c.x +  404.0
+      case c: C5 => c.x +  405.0
+      case c: C6 => c.x +  406.0
+      case c: C7 => c.x +  407.0
+      case c: C8 => c.x +  408.0
+      case c: C9 => c.x +  409.0
+      case c: C10 => c.x + 410.0
+      case c: C11 => c.x + 411.0
+      case c: C12 => c.x + 412.0
+      case c: C13 => c.x + 413.0
+      case c: C14 => c.x + 414.0
+      case c: C15 => c.x + 415.0
+      case c: C16 => c.x + 416.0
+      case c: C17 => c.x + 417.0
+      case c: C18 => c.x + 418.0
+      case c: C19 => c.x + 419.0
+      case c: C20 => c.x + 420.0
+      case c: C21 => c.x + 421.0
+      case c: C22 => c.x + 422.0
+      case c: C23 => c.x + 423.0
+      case c: C24 => c.x + 424.0
+      case c: C25 => c.x + 425.0
+      case c: C26 => c.x + 426.0
+      case c: C27 => c.x + 427.0
+      case c: C28 => c.x + 428.0
+      case c: C29 => c.x + 429.0
+      case c: C30 => c.x + 430.0
+      case c: C31 => c.x + 431.0
+      case c: C32 => c.x + 432.0
 
 final class C1(val x: Double) extends C
 final class C2(val x: Double) extends C
@@ -73,9 +73,9 @@ final class C30(val x: Double) extends C
 final class C31(val x: Double) extends C
 final class C32(val x: Double) extends C
 
-def randomC(classesCount: Int = 32)(using random: Random) =
-  val i = remainderUnsigned(random.nextLong(), classesCount)
-  val randomDouble = random.nextDoubleBetween(1, 10)
+def randomC(classesCount: Int)(using random: scala.util.Random) =
+  val i = random.nextInt(classesCount)
+  val randomDouble = random.nextDouble()
   i match
     case 0 => new C1(randomDouble)
     case 1 => new C2(randomDouble)
