@@ -8,104 +8,104 @@ abstract class C:
   def f(): Double
 
 final class C1(val x: Double) extends C:
-  def f(): Double = x + 1.0
+  def f(): Double = x + 401.0
 
 final class C2(val x: Double) extends C:
-  def f(): Double = x + 2.0
+  def f(): Double = x + 402.0
 
 final class C3(val x: Double) extends C:
-  def f(): Double = x + 3.0
+  def f(): Double = x + 403.0
 
 final class C4(val x: Double) extends C:
-  def f(): Double = x + 4.0
+  def f(): Double = x + 404.0
 
 final class C5(val x: Double) extends C:
-  def f(): Double = x + 5.0
+  def f(): Double = x + 405.0
 
 final class C6(val x: Double) extends C:
-  def f(): Double = x + 6.0
+  def f(): Double = x + 406.0
 
 final class C7(val x: Double) extends C:
-  def f(): Double = x + 7.0
+  def f(): Double = x + 407.0
 
 final class C8(val x: Double) extends C:
-  def f(): Double = x + 8.0
+  def f(): Double = x + 408.0
 
 final class C9(val x: Double) extends C:
-  def f(): Double = x + 9.0
+  def f(): Double = x + 409.0
 
 final class C10(val x: Double) extends C:
-  def f(): Double = x + 10.0
+  def f(): Double = x + 410.0
 
 final class C11(val x: Double) extends C:
-  def f(): Double = x + 11.0
+  def f(): Double = x + 411.0
 
 final class C12(val x: Double) extends C:
-  def f(): Double = x + 12.0
+  def f(): Double = x + 412.0
 
 final class C13(val x: Double) extends C:
-  def f(): Double = x + 13.0
+  def f(): Double = x + 413.0
 
 final class C14(val x: Double) extends C:
-  def f(): Double = x + 14.0
+  def f(): Double = x + 414.0
 
 final class C15(val x: Double) extends C:
-  def f(): Double = x + 15.0
+  def f(): Double = x + 415.0
 
 final class C16(val x: Double) extends C:
-  def f(): Double = x + 16.0
+  def f(): Double = x + 416.0
 
 final class C17(val x: Double) extends C:
-  def f(): Double = x + 17.0
+  def f(): Double = x + 417.0
 
 final class C18(val x: Double) extends C:
-  def f(): Double = x + 18.0
+  def f(): Double = x + 418.0
 
 final class C19(val x: Double) extends C:
-  def f(): Double = x + 19.0
+  def f(): Double = x + 419.0
 
 final class C20(val x: Double) extends C:
-  def f(): Double = x + 21.0
+  def f(): Double = x + 421.0
 
 final class C21(val x: Double) extends C:
-  def f(): Double = x + 21.0
+  def f(): Double = x + 421.0
 
 final class C22(val x: Double) extends C:
-  def f(): Double = x + 22.0
+  def f(): Double = x + 422.0
 
 final class C23(val x: Double) extends C:
-  def f(): Double = x + 23.0
+  def f(): Double = x + 423.0
 
 final class C24(val x: Double) extends C:
-  def f(): Double = x + 24.0
+  def f(): Double = x + 424.0
 
 final class C25(val x: Double) extends C:
-  def f(): Double = x + 25.0
+  def f(): Double = x + 425.0
 
 final class C26(val x: Double) extends C:
-  def f(): Double = x + 26.0
+  def f(): Double = x + 426.0
 
 final class C27(val x: Double) extends C:
-  def f(): Double = x + 27.0
+  def f(): Double = x + 427.0
 
 final class C28(val x: Double) extends C:
-  def f(): Double = x + 28.0
+  def f(): Double = x + 428.0
 
 final class C29(val x: Double) extends C:
-  def f(): Double = x + 29.0
+  def f(): Double = x + 429.0
 
 final class C30(val x: Double) extends C:
-  def f(): Double = x + 30.0
+  def f(): Double = x + 430.0
 
 final class C31(val x: Double) extends C:
-  def f(): Double = x + 31.0
+  def f(): Double = x + 431.0
 
 final class C32(val x: Double) extends C:
-  def f(): Double = x + 32.0
+  def f(): Double = x + 432.0
 
-def randomC(classesCount: Int = 32)(using random: Random) =
-  val i = remainderUnsigned(random.nextLong(), classesCount)
-  val randomDouble = random.nextDoubleBetween(1, 10)
+def randomC(classesCount: Int)(using random: scala.util.Random) =
+  val i = random.nextInt(classesCount)
+  val randomDouble = random.nextDouble()
   i match
     case 0 => new C1(randomDouble)
     case 1 => new C2(randomDouble)

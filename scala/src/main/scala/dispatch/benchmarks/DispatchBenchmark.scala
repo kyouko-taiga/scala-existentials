@@ -15,7 +15,7 @@ import lcg.Random
 @Measurement(iterations = 3, time = 5, timeUnit = SECONDS)
 @State(Scope.Benchmark)
 class DispatchBenchmark:
-  @Param(Array("2", "8", "32"))
+  @Param(Array("2", "4", "6", "8", "10", "16", "32"))
   var classesCount: String = uninitialized
   var classesCountInt: Int = uninitialized
 
@@ -34,15 +34,15 @@ class DispatchBenchmark:
     classesCountInt = classesCount.toInt
     valuesCountInt = valuesCount.toInt
     {
-      given Random = Random(0xACE1)
+      given scala.util.Random = scala.util.Random(0xACE1)
       casesValues = Array.fill(valuesCountInt)(cases.randomC(classesCountInt))
     }
     {
-      given Random = Random(0xACE1)
+      given scala.util.Random = scala.util.Random(0xACE1)
       existentialValues = Array.fill(valuesCountInt)(existential.randomContainingC(classesCountInt))
     }
     {
-      given Random = Random(0xACE1)
+      given scala.util.Random = scala.util.Random(0xACE1)
       inheritanceValues = Array.fill(valuesCountInt)(inheritance.randomC(classesCountInt))
     }
 

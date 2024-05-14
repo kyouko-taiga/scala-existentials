@@ -43,104 +43,104 @@ final class C31(val x: Double)
 final class C32(val x: Double)
 
 given C1 is C:
-  extension (s: C1) def f(): Double = s.x + 1.0
+  extension (s: C1) def f(): Double = s.x + 401.0
 
 given C2 is C:
-  extension (s: C2) def f(): Double = s.x + 2.0
+  extension (s: C2) def f(): Double = s.x + 402.0
 
 given C3 is C:
-  extension (s: C3) def f(): Double = s.x + 3.0
+  extension (s: C3) def f(): Double = s.x + 403.0
 
 given C4 is C:
-  extension (s: C4) def f(): Double = s.x + 4.0
+  extension (s: C4) def f(): Double = s.x + 404.0
 
 given C5 is C:
-  extension (s: C5) def f(): Double = s.x + 5.0
+  extension (s: C5) def f(): Double = s.x + 405.0
 
 given C6 is C:
-  extension (s: C6) def f(): Double = s.x + 6.0
+  extension (s: C6) def f(): Double = s.x + 406.0
 
 given C7 is C:
-  extension (s: C7) def f(): Double = s.x + 7.0
+  extension (s: C7) def f(): Double = s.x + 407.0
 
 given C8 is C:
-  extension (s: C8) def f(): Double = s.x + 8.0
+  extension (s: C8) def f(): Double = s.x + 408.0
 
 given C9 is C:
-  extension (s: C9) def f(): Double = s.x + 9.0
+  extension (s: C9) def f(): Double = s.x + 409.0
 
 given C10 is C:
-  extension (s: C10) def f(): Double = s.x + 10.0
+  extension (s: C10) def f(): Double = s.x + 410.0
 
 given C11 is C:
-  extension (s: C11) def f(): Double = s.x + 11.0
+  extension (s: C11) def f(): Double = s.x + 411.0
 
 given C12 is C:
-  extension (s: C12) def f(): Double = s.x + 12.0
+  extension (s: C12) def f(): Double = s.x + 412.0
 
 given C13 is C:
-  extension (s: C13) def f(): Double = s.x + 13.0
+  extension (s: C13) def f(): Double = s.x + 413.0
 
 given C14 is C:
-  extension (s: C14) def f(): Double = s.x + 14.0
+  extension (s: C14) def f(): Double = s.x + 414.0
 
 given C15 is C:
-  extension (s: C15) def f(): Double = s.x + 15.0
+  extension (s: C15) def f(): Double = s.x + 415.0
 
 given C16 is C:
-  extension (s: C16) def f(): Double = s.x + 16.0
+  extension (s: C16) def f(): Double = s.x + 416.0
 
 given C17 is C:
-  extension (s: C17) def f(): Double = s.x + 17.0
+  extension (s: C17) def f(): Double = s.x + 417.0
 
 given C18 is C:
-  extension (s: C18) def f(): Double = s.x + 18.0
+  extension (s: C18) def f(): Double = s.x + 418.0
 
 given C19 is C:
-  extension (s: C19) def f(): Double = s.x + 19.0
+  extension (s: C19) def f(): Double = s.x + 419.0
 
 given C20 is C:
-  extension (s: C20) def f(): Double = s.x + 21.0
+  extension (s: C20) def f(): Double = s.x + 421.0
 
 given C21 is C:
-  extension (s: C21) def f(): Double = s.x + 21.0
+  extension (s: C21) def f(): Double = s.x + 421.0
 
 given C22 is C:
-  extension (s: C22) def f(): Double = s.x + 22.0
+  extension (s: C22) def f(): Double = s.x + 422.0
 
 given C23 is C:
-  extension (s: C23) def f(): Double = s.x + 23.0
+  extension (s: C23) def f(): Double = s.x + 423.0
 
 given C24 is C:
-  extension (s: C24) def f(): Double = s.x + 24.0
+  extension (s: C24) def f(): Double = s.x + 424.0
 
 given C25 is C:
-  extension (s: C25) def f(): Double = s.x + 25.0
+  extension (s: C25) def f(): Double = s.x + 425.0
 
 given C26 is C:
-  extension (s: C26) def f(): Double = s.x + 26.0
+  extension (s: C26) def f(): Double = s.x + 426.0
 
 given C27 is C:
-  extension (s: C27) def f(): Double = s.x + 27.0
+  extension (s: C27) def f(): Double = s.x + 427.0
 
 given C28 is C:
-  extension (s: C28) def f(): Double = s.x + 28.0
+  extension (s: C28) def f(): Double = s.x + 428.0
 
 given C29 is C:
-  extension (s: C29) def f(): Double = s.x + 29.0
+  extension (s: C29) def f(): Double = s.x + 429.0
 
 given C30 is C:
-  extension (s: C30) def f(): Double = s.x + 30.0
+  extension (s: C30) def f(): Double = s.x + 430.0
 
 given C31 is C:
-  extension (s: C31) def f(): Double = s.x + 31.0
+  extension (s: C31) def f(): Double = s.x + 431.0
 
 given C32 is C:
-  extension (s: C32) def f(): Double = s.x + 32.0
+  extension (s: C32) def f(): Double = s.x + 432.0
 
-def randomContainingC(classesCount: Int = 32)(using random: Random): Containing[C] =
-  val i = remainderUnsigned(random.nextLong(), classesCount)
-  val randomDouble = random.nextDoubleBetween(1, 10)
+def randomContainingC(classesCount: Int)(using random: scala.util.Random): Containing[C] =
+  val i = random.nextInt(classesCount)
+  val randomDouble = random.nextDouble()
   i match
     case 0 => Containing(C1(randomDouble))
     case 1 => Containing(C2(randomDouble))
