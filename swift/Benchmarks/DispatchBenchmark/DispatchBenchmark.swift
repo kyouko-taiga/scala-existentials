@@ -7,31 +7,31 @@ import DispatchExistential
 import Lcg
 
 let benchmarks: () -> () = {
-  let classesCounts: [UInt64] = [2, 8, 32]
   let valuesCount = 100
+  let classCounts: [Int] = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
   let config = Benchmark.Configuration(
       metrics: [BenchmarkMetric.throughput],
       //warmupIterations: 10,
       maxDuration: .seconds(10)
       //maxIterations: 30
   )
-  for classesCount in classesCounts {
-    var random = Lcg.Random(seed: 0xACE1)
-    let inheritanceValues: [DispatchInheritance.C] = (0 ..< valuesCount).map { _ in DispatchInheritance.randomC(random: &random, classesCount: classesCount) }
-    random = Lcg.Random(seed: 0xACE1)
-    let existentialValues: [any DispatchExistential.C] = (0 ..< valuesCount).map { _ in DispatchExistential.randomAnyC(random: &random, classesCount: classesCount) }
+  for classCount in classCounts {
+    let inheritanceValues: [DispatchInheritance.C] =
+      (0 ..< valueCount).map { i in DispatchInheritance.randomC(classIndex: i % classCount, value: Double(i)) }
+    let existentialValues: [any DispatchExistential.C] =
+      (0 ..< valueCount).map { i in DispatchExistential.randomAnyC(classIndex: i % classCount, value: Double(i)) }
 
-    Benchmark("dispatchInheritance(classesCount:\(classesCount))", configuration: config) { _ in
+    Benchmark("dispatchInheritance(classCount:\(classCount))", configuration: config) { _ in
       var sum: Double = 0
-      for i in 0..<valuesCount {
+      for i in 0..<valueCount {
         sum += inheritanceValues[i].f()
       }
       blackHole(sum)
     }
 
-    Benchmark("dispatchExistential(classesCount:\(classesCount))", configuration: config) { _ in
+    Benchmark("dispatchExistential(classCount:\(classCount))", configuration: config) { _ in
       var sum: Double = 0
-      for i in 0..<valuesCount {
+      for i in 0..<valueCount {
         sum += existentialValues[i].f()
       }
       blackHole(sum)
