@@ -1,7 +1,5 @@
 package dispatch.existential
 
-import lcg.Random
-
 import java.lang.Long.remainderUnsigned
 
 trait C extends TmpPredef.TypeClass:
@@ -138,40 +136,38 @@ given C31 is C:
 given C32 is C:
   extension (s: C32) def f(): Double = s.x + 432.0
 
-def randomContainingC(classesCount: Int)(using random: scala.util.Random): Containing[C] =
-  val i = random.nextInt(classesCount)
-  val randomDouble = random.nextDouble()
-  i match
-    case 0 => Containing(C1(randomDouble))
-    case 1 => Containing(C2(randomDouble))
-    case 2 => Containing(C3(randomDouble))
-    case 3 => Containing(C4(randomDouble))
-    case 4 => Containing(C5(randomDouble))
-    case 5 => Containing(C6(randomDouble))
-    case 6 => Containing(C7(randomDouble))
-    case 7 => Containing(C8(randomDouble))
-    case 8 => Containing(C9(randomDouble))
-    case 9 => Containing(C10(randomDouble))
-    case 10 => Containing(C11(randomDouble))
-    case 11 => Containing(C12(randomDouble))
-    case 12 => Containing(C13(randomDouble))
-    case 13 => Containing(C14(randomDouble))
-    case 14 => Containing(C15(randomDouble))
-    case 15 => Containing(C16(randomDouble))
-    case 16 => Containing(C17(randomDouble))
-    case 17 => Containing(C18(randomDouble))
-    case 18 => Containing(C19(randomDouble))
-    case 19 => Containing(C20(randomDouble))
-    case 20 => Containing(C21(randomDouble))
-    case 21 => Containing(C22(randomDouble))
-    case 22 => Containing(C23(randomDouble))
-    case 23 => Containing(C24(randomDouble))
-    case 24 => Containing(C25(randomDouble))
-    case 25 => Containing(C26(randomDouble))
-    case 26 => Containing(C27(randomDouble))
-    case 27 => Containing(C28(randomDouble))
-    case 28 => Containing(C29(randomDouble))
-    case 29 => Containing(C30(randomDouble))
-    case 30 => Containing(C31(randomDouble))
-    case 31 => Containing(C32(randomDouble))
+def randomContainingC(classesIndex: Int, value: Double): Containing[C] =
+  classesIndex match
+    case 0 => Containing(C1(value))
+    case 1 => Containing(C2(value))
+    case 2 => Containing(C3(value))
+    case 3 => Containing(C4(value))
+    case 4 => Containing(C5(value))
+    case 5 => Containing(C6(value))
+    case 6 => Containing(C7(value))
+    case 7 => Containing(C8(value))
+    case 8 => Containing(C9(value))
+    case 9 => Containing(C10(value))
+    case 10 => Containing(C11(value))
+    case 11 => Containing(C12(value))
+    case 12 => Containing(C13(value))
+    case 13 => Containing(C14(value))
+    case 14 => Containing(C15(value))
+    case 15 => Containing(C16(value))
+    case 16 => Containing(C17(value))
+    case 17 => Containing(C18(value))
+    case 18 => Containing(C19(value))
+    case 19 => Containing(C20(value))
+    case 20 => Containing(C21(value))
+    case 21 => Containing(C22(value))
+    case 22 => Containing(C23(value))
+    case 23 => Containing(C24(value))
+    case 24 => Containing(C25(value))
+    case 25 => Containing(C26(value))
+    case 26 => Containing(C27(value))
+    case 27 => Containing(C28(value))
+    case 28 => Containing(C29(value))
+    case 29 => Containing(C30(value))
+    case 30 => Containing(C31(value))
+    case 31 => Containing(C32(value))
     case n => throw new RuntimeException("Invalid C type index: " + n)

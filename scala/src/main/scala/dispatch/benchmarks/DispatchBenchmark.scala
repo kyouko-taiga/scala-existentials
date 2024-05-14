@@ -15,13 +15,13 @@ import lcg.Random
 @Measurement(iterations = 3, time = 5, timeUnit = SECONDS)
 @State(Scope.Benchmark)
 class DispatchBenchmark:
-  @Param(Array("2", "4", "6", "8", "10", "16", "32"))
-  var classesCount: String = uninitialized
-  var classesCountInt: Int = uninitialized
+  @Param(Array("2", "4", "6", "8", "10", "12", "14", "16", "18", "20"))
+  var classCount: String = uninitialized
+  var classCountInt: Int = uninitialized
 
   @Param(Array("100"))
-  var valuesCount: String = uninitialized
-  var valuesCountInt: Int = uninitialized
+  var valueCount: String = uninitialized
+  var valueCountInt: Int = uninitialized
 
   var casesValues: Array[cases.C] = uninitialized
   var existentialValues: Array[Containing[existential.C]] = uninitialized
@@ -31,26 +31,23 @@ class DispatchBenchmark:
 
   @Setup(Level.Trial)
   def setup =
-    classesCountInt = classesCount.toInt
-    valuesCountInt = valuesCount.toInt
+    classCountInt = classCount.toInt
+    valueCountInt = valueCount.toInt
     {
-      given scala.util.Random = scala.util.Random(0xACE1)
-      casesValues = Array.fill(valuesCountInt)(cases.randomC(classesCountInt))
+      casesValues = Array.tabulate(valueCountInt)(i => cases.randomC(i % classCountInt, i))
     }
     {
-      given scala.util.Random = scala.util.Random(0xACE1)
-      existentialValues = Array.fill(valuesCountInt)(existential.randomContainingC(classesCountInt))
+      existentialValues = Array.tabulate(valueCountInt)(i => existential.randomContainingC(i % classCountInt, i))
     }
     {
-      given scala.util.Random = scala.util.Random(0xACE1)
-      inheritanceValues = Array.fill(valuesCountInt)(inheritance.randomC(classesCountInt))
+      inheritanceValues = Array.tabulate(valueCountInt)(i => inheritance.randomC(i % classCountInt, i))
     }
 
   @Benchmark
   def benchmarkCases =
     var sum: Double = 0
     var i: Int = 0
-    while i < valuesCountInt do
+    while i < valueCountInt do
       sum = sum + casesValues(i).f()
       i += 1
     sum
@@ -59,7 +56,7 @@ class DispatchBenchmark:
   def benchmarkExistential =
     var sum: Double = 0
     var i: Int = 0
-    while i < valuesCountInt do
+    while i < valueCountInt do
       val c = existentialValues(i)
       sum = sum + c.f()
       i += 1
@@ -69,7 +66,7 @@ class DispatchBenchmark:
   def benchmarkInheritance =
     var sum: Double = 0
     var i: Int = 0
-    while i < valuesCountInt do
+    while i < valueCountInt do
       sum = sum + inheritanceValues(i).f()
       i += 1
     sum

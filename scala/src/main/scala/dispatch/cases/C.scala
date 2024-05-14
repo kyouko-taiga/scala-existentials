@@ -1,7 +1,5 @@
 package dispatch.cases
 
-import lcg.Random
-
 import java.lang.Long.remainderUnsigned
 
 sealed trait C:
@@ -73,40 +71,38 @@ final class C30(val x: Double) extends C
 final class C31(val x: Double) extends C
 final class C32(val x: Double) extends C
 
-def randomC(classesCount: Int)(using random: scala.util.Random) =
-  val i = random.nextInt(classesCount)
-  val randomDouble = random.nextDouble()
-  i match
-    case 0 => new C1(randomDouble)
-    case 1 => new C2(randomDouble)
-    case 2 => new C3(randomDouble)
-    case 3 => new C4(randomDouble)
-    case 4 => new C5(randomDouble)
-    case 5 => new C6(randomDouble)
-    case 6 => new C7(randomDouble)
-    case 7 => new C8(randomDouble)
-    case 8 => new C9(randomDouble)
-    case 9 => new C10(randomDouble)
-    case 10 => new C11(randomDouble)
-    case 11 => new C12(randomDouble)
-    case 12 => new C13(randomDouble)
-    case 13 => new C14(randomDouble)
-    case 14 => new C15(randomDouble)
-    case 15 => new C16(randomDouble)
-    case 16 => new C17(randomDouble)
-    case 17 => new C18(randomDouble)
-    case 18 => new C19(randomDouble)
-    case 19 => new C20(randomDouble)
-    case 20 => new C21(randomDouble)
-    case 21 => new C22(randomDouble)
-    case 22 => new C23(randomDouble)
-    case 23 => new C24(randomDouble)
-    case 24 => new C25(randomDouble)
-    case 25 => new C26(randomDouble)
-    case 26 => new C27(randomDouble)
-    case 27 => new C28(randomDouble)
-    case 28 => new C29(randomDouble)
-    case 29 => new C30(randomDouble)
-    case 30 => new C31(randomDouble)
-    case 31 => new C32(randomDouble)
+def randomC(classesIndex: Int, value: Double) =
+  classesIndex match
+    case 0 => new C1(value)
+    case 1 => new C2(value)
+    case 2 => new C3(value)
+    case 3 => new C4(value)
+    case 4 => new C5(value)
+    case 5 => new C6(value)
+    case 6 => new C7(value)
+    case 7 => new C8(value)
+    case 8 => new C9(value)
+    case 9 => new C10(value)
+    case 10 => new C11(value)
+    case 11 => new C12(value)
+    case 12 => new C13(value)
+    case 13 => new C14(value)
+    case 14 => new C15(value)
+    case 15 => new C16(value)
+    case 16 => new C17(value)
+    case 17 => new C18(value)
+    case 18 => new C19(value)
+    case 19 => new C20(value)
+    case 20 => new C21(value)
+    case 21 => new C22(value)
+    case 22 => new C23(value)
+    case 23 => new C24(value)
+    case 24 => new C25(value)
+    case 25 => new C26(value)
+    case 26 => new C27(value)
+    case 27 => new C28(value)
+    case 28 => new C29(value)
+    case 29 => new C30(value)
+    case 30 => new C31(value)
+    case 31 => new C32(value)
     case n => throw new RuntimeException("Invalid C type index: " + n)

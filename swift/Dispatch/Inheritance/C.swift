@@ -9,7 +9,7 @@ final class C1: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 1.0 }
+  func f() -> Double { return x + 401.0 }
 }
 
 final class C2: C {
@@ -17,7 +17,7 @@ final class C2: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 2.0 }
+  func f() -> Double { return x + 402.0 }
 }
 
 final class C3: C {
@@ -25,7 +25,7 @@ final class C3: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 3.0 }
+  func f() -> Double { return x + 403.0 }
 }
 
 final class C4: C {
@@ -33,7 +33,7 @@ final class C4: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 4.0 }
+  func f() -> Double { return x + 404.0 }
 }
 
 final class C5: C {
@@ -41,7 +41,7 @@ final class C5: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 5.0 }
+  func f() -> Double { return x + 405.0 }
 }
 
 final class C6: C {
@@ -49,7 +49,7 @@ final class C6: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 6.0 }
+  func f() -> Double { return x + 406.0 }
 }
 
 final class C7: C {
@@ -57,7 +57,7 @@ final class C7: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 7.0 }
+  func f() -> Double { return x + 407.0 }
 }
 
 final class C8: C {
@@ -65,7 +65,7 @@ final class C8: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 8.0 }
+  func f() -> Double { return x + 408.0 }
 }
 
 final class C9: C {
@@ -73,7 +73,7 @@ final class C9: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 9.0 }
+  func f() -> Double { return x + 409.0 }
 }
 
 final class C10: C {
@@ -81,7 +81,7 @@ final class C10: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 10.0 }
+  func f() -> Double { return x + 410.0 }
 }
 
 final class C11: C {
@@ -89,7 +89,7 @@ final class C11: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 11.0 }
+  func f() -> Double { return x + 411.0 }
 }
 
 final class C12: C {
@@ -97,7 +97,7 @@ final class C12: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 12.0 }
+  func f() -> Double { return x + 412.0 }
 }
 
 final class C13: C {
@@ -105,7 +105,7 @@ final class C13: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 13.0 }
+  func f() -> Double { return x + 413.0 }
 }
 
 final class C14: C {
@@ -113,7 +113,7 @@ final class C14: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 14.0 }
+  func f() -> Double { return x + 414.0 }
 }
 
 final class C15: C {
@@ -121,7 +121,7 @@ final class C15: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 15.0 }
+  func f() -> Double { return x + 415.0 }
 }
 
 final class C16: C {
@@ -129,7 +129,7 @@ final class C16: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 16.0 }
+  func f() -> Double { return x + 416.0 }
 }
 
 final class C17: C {
@@ -137,7 +137,7 @@ final class C17: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 17.0 }
+  func f() -> Double { return x + 417.0 }
 }
 
 final class C18: C {
@@ -145,7 +145,7 @@ final class C18: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 18.0 }
+  func f() -> Double { return x + 418.0 }
 }
 
 final class C19: C {
@@ -153,7 +153,7 @@ final class C19: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 19.0 }
+  func f() -> Double { return x + 419.0 }
 }
 
 final class C20: C {
@@ -161,7 +161,7 @@ final class C20: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 20.0 }
+  func f() -> Double { return x + 420.0 }
 }
 
 final class C21: C {
@@ -169,7 +169,7 @@ final class C21: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 21.0 }
+  func f() -> Double { return x + 421.0 }
 }
 
 final class C22: C {
@@ -177,7 +177,7 @@ final class C22: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 22.0 }
+  func f() -> Double { return x + 422.0 }
 }
 
 final class C23: C {
@@ -185,7 +185,7 @@ final class C23: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 23.0 }
+  func f() -> Double { return x + 423.0 }
 }
 
 final class C24: C {
@@ -193,7 +193,7 @@ final class C24: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 24.0 }
+  func f() -> Double { return x + 424.0 }
 }
 
 final class C25: C {
@@ -201,7 +201,7 @@ final class C25: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 25.0 }
+  func f() -> Double { return x + 425.0 }
 }
 
 final class C26: C {
@@ -209,7 +209,7 @@ final class C26: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 26.0 }
+  func f() -> Double { return x + 426.0 }
 }
 
 final class C27: C {
@@ -217,7 +217,7 @@ final class C27: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 27.0 }
+  func f() -> Double { return x + 427.0 }
 }
 
 final class C28: C {
@@ -225,7 +225,7 @@ final class C28: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 28.0 }
+  func f() -> Double { return x + 428.0 }
 }
 
 final class C29: C {
@@ -233,7 +233,7 @@ final class C29: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 29.0 }
+  func f() -> Double { return x + 429.0 }
 }
 
 final class C30: C {
@@ -241,7 +241,7 @@ final class C30: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 30.0 }
+  func f() -> Double { return x + 430.0 }
 }
 
 final class C31: C {
@@ -249,7 +249,7 @@ final class C31: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 31.0 }
+  func f() -> Double { return x + 431.0 }
 }
 
 final class C32: C {
@@ -257,45 +257,43 @@ final class C32: C {
   init(_ x: Double) {
     self.x = x
   }
-  func f() -> Double { return x + 32.0 }
+  func f() -> Double { return x + 432.0 }
 }
 
-public func randomC(random: inout Lcg.Random, classesCount: UInt64 = 32) -> C {
-  let i = random.nextUInt64() % classesCount
-  let randomDouble = random.nextDoubleBetween(min: 0.0, max: 10.0)
-  switch i {
-    case 0: return C1(randomDouble)
-    case 1: return C2(randomDouble)
-    case 2: return C3(randomDouble)
-    case 3: return C4(randomDouble)
-    case 4: return C5(randomDouble)
-    case 5: return C6(randomDouble)
-    case 6: return C7(randomDouble)
-    case 7: return C8(randomDouble)
-    case 8: return C9(randomDouble)
-    case 9: return C10(randomDouble)
-    case 10: return C11(randomDouble)
-    case 11: return C12(randomDouble)
-    case 12: return C13(randomDouble)
-    case 13: return C14(randomDouble)
-    case 14: return C15(randomDouble)
-    case 15: return C16(randomDouble)
-    case 16: return C17(randomDouble)
-    case 17: return C18(randomDouble)
-    case 18: return C19(randomDouble)
-    case 19: return C20(randomDouble)
-    case 20: return C21(randomDouble)
-    case 21: return C22(randomDouble)
-    case 22: return C23(randomDouble)
-    case 23: return C24(randomDouble)
-    case 24: return C25(randomDouble)
-    case 25: return C26(randomDouble)
-    case 26: return C27(randomDouble)
-    case 27: return C28(randomDouble)
-    case 28: return C29(randomDouble)
-    case 29: return C30(randomDouble)
-    case 30: return C31(randomDouble)
-    case 31: return C32(randomDouble)
-    default: fatalError("Invalid final class type index: \(i)")
+public func randomC(classIndex: Int, value: Double) -> any C {
+  switch classIndex {
+    case 0: return C1(value)
+    case 1: return C2(value)
+    case 2: return C3(value)
+    case 3: return C4(value)
+    case 4: return C5(value)
+    case 5: return C6(value)
+    case 6: return C7(value)
+    case 7: return C8(value)
+    case 8: return C9(value)
+    case 9: return C10(value)
+    case 10: return C11(value)
+    case 11: return C12(value)
+    case 12: return C13(value)
+    case 13: return C14(value)
+    case 14: return C15(value)
+    case 15: return C16(value)
+    case 16: return C17(value)
+    case 17: return C18(value)
+    case 18: return C19(value)
+    case 19: return C20(value)
+    case 20: return C21(value)
+    case 21: return C22(value)
+    case 22: return C23(value)
+    case 23: return C24(value)
+    case 24: return C25(value)
+    case 25: return C26(value)
+    case 26: return C27(value)
+    case 27: return C28(value)
+    case 28: return C29(value)
+    case 29: return C30(value)
+    case 30: return C31(value)
+    case 31: return C32(value)
+    default: fatalError("Invalid final class type index: \(classIndex)")
   }
 }
