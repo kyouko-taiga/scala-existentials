@@ -3,16 +3,17 @@ package benchmarks
 
 import scala.compiletime.uninitialized
 
-import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measurement, Mode as JMHMode, Param, Scope, Setup, State, Warmup}
-import java.util.concurrent.TimeUnit.SECONDS
+import org.openjdk.jmh.annotations.{Benchmark, BenchmarkMode, Fork, Level, Measurement, Mode as JMHMode, OutputTimeUnit, Param, Scope, Setup, State, Warmup}
+import java.util.concurrent.TimeUnit.{MICROSECONDS, SECONDS}
 
-@BenchmarkMode(Array(JMHMode.AverageTime))
-@Fork(value = 2)
-@Warmup(iterations = 4, time = 5, timeUnit = SECONDS)
-@Measurement(iterations = 4, time = 5, timeUnit = SECONDS)
+@BenchmarkMode(Array(JMHMode.SingleShotTime))
+@Fork(value = 1)
+@Warmup(iterations = 10, time = 1, timeUnit = SECONDS)
+@Measurement(iterations = 10, time = 1, timeUnit = SECONDS)
 @State(Scope.Benchmark)
+@OutputTimeUnit(MICROSECONDS)
 class RaysBenchmark:
-  @Param(Array("512", "2048"))
+  @Param(Array("1000"))
   var size: String = uninitialized
 
   @Benchmark
