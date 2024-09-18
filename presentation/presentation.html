@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Eugene">
+  <meta name="dcterms.date" content="2024-09-18">
+  <title>Blop blop</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <link rel="stylesheet" href="custom.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Blop blop</h1>
+  <p class="author">Eugene</p>
+  <p class="date">September 18, 2024</p>
+</section>
+
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<p>Say we have a list of shapes we want to draw</p>
+<pre class="scala"><code>import lib.shapes.{Shape, Square, Circle}
+
+val shapes: List[Shape] = List(Square(side = 3), Circle(radius = 5))
+
+def drawAll(xs: List[Shape]): Unit =
+  for x &lt;- xs do print(x.draw)
+
+drawAll(shapes)</code></pre>
+</section>
+<section id="introduction-1" class="slide level2">
+<h2>Introduction</h2>
+<pre class="scala"><code>package lib.shapes
+
+trait Shape:
+  def draw: String
+
+class Square(side: Int) extends Shape:
+  def draw = ???</code></pre>
+<p>Problem: the person who did the shapes library forgot about draw What
+do we do now?</p>
+</section>
+<section id="simple-solution" class="slide level2">
+<h2>Simple solution</h2>
+<!-- But we can not make `Drawable` a super trait of the library shapes retroactively. -->
+<pre class="scala"><code>class DrawableSquare(s: Square) extends Drawable:
+  def draw = &quot;TODO&quot;
+
+class DrawableCircle(c: Circle) extends Drawable:
+  def draw = &quot;TODO&quot;
+
+...
+
+drawAll(DrawableSquare(Square(3)), DrawableCircle(Circle(5)))</code></pre>
+<!-- But wrapping and unwrapping shapes will obviously not scala satisfactorily -->
+</section>
+<section id="type-classes" class="slide level2">
+<h2>Type Classes</h2>
+<pre class="scala"><code>trait Drawable[X]:
+  def draw(x: X): String
+
+def drawAll[T](xs: List[T])(witness: Drawable[T]): Unit =
+  for x &lt;- xs do print(witness.draw(x))
+
+val SquareIsDrawable:
+  def draw(x: X) = TODO
+
+drawAll[Square](List(Square(3), Square(4)))(SquareIsDrawable)</code></pre>
+<!-- Okay great, but still kinda wordy -->
+</section>
+<section id="with-type-classes-context-parameters" class="slide level2">
+<h2>With Type Classes &amp; Context parameters</h2>
+<pre class="scala"><code>trait Drawable extends TypeClass:
+  extension(self: Self) def draw: String
+
+def drawAll[T: Drawable](xs: List[T]): Unit =
+  for x &lt;- xs do print(x.draw)
+
+given Square is Drawable:
+  extension(self: Square) def draw = TODO
+
+drawAll(List(Square(3), Square(4))) // OK!</code></pre>
+<p>We got retroactive conformance, usable ergonomically, so problem
+solved !?</p>
+</section>
+<section id="problem" class="slide level2">
+<h2>Problem</h2>
+<pre class="scala"><code>given Circle is Shape:
+  extension(self: Square) def draw = TODO
+
+drawAll(List(Square(3), Circle(9))) // Type Error:</code></pre>
+<p>#TODO exact msg</p>
+<p>Are generic definitions using type classes then incomparable with
+heterogeneous collections ? 😨</p>
+</section>
+<section id="what-others-do" class="slide level2">
+<h2>What Others Do</h2>
+<!-- Language features -->
+<pre class="rust"><code>fn drawAll(xs: std::vec&lt;dyn Drawable&gt;) -&gt; () = ...</code></pre>
+<ul>
+<li>Swift similarly has <code>any Drawable</code></li>
+</ul>
+<pre><code>{ 
+  value // of any type of shape
+  witness // contains the definition of how to draw the value 
+}</code></pre>
+<p>Should we just copy them then, … %% r has x many lines … %% Or is it
+already expressible in Scala? After all it’s just a pair #TODO
+drawing</p>
+</section>
+<section id="containers-of-showable" class="slide level2">
+<h2>Containers of Showable</h2>
+<pre class="scala"><code>trait AnyDrawable:
+  
+  val value: ?
+  val witness: ?</code></pre>
+</section>
+<section id="containers-of-showable-1" class="slide level2">
+<h2>Containers of Showable</h2>
+<pre class="scala"><code>trait AnyDrawable:
+  
+  val value: ?
+  val witness: ? is Drawable</code></pre>
+<!-- Something that is Drawable, a type that is the same as the one of the value -->
+</section>
+<section id="containers-of-showable-2" class="slide level2">
+<h2>Containers of Showable</h2>
+<pre class="scala"><code>trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable</code></pre>
+</section>
+<section id="this-is-an-existential-pair" class="slide level2">
+<h2>This is an existential pair!!!!</h2>
+<p><span class="math display">\langle \exists X, (X, \text{X is
+Drawable}) \rangle</span></p>
+</section>
+<section id="containers-of-showable-3" class="slide level2">
+<h2>Containers of Showable</h2>
+<pre class="scala"><code>trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable
+
+def drawAll(xs: List[AnyDrawable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Drawable = x.witness
+    print(w.show(x))
+
+val s1 = new AnyShowable:
+  type Value = Square
+  val value = Square(3)
+  val witness = SquareIsShowable
+
+val s2 = new AnyShowable:
+  type Value = Circle
+  val value = Circle(9)
+  val witness = CircleIsShowable
+
+drawAll(List(s1, s2))</code></pre>
+<!-- But it's wordy, again 😵‍💫 -->
+</section>
+<section id="containers-of-showable-4" class="slide level2">
+<h2>Containers of Showable</h2>
+<pre class="scala"><code>trait AnyShowable:
+  type Value
+  val value: Value
+  val drawer: Value is Showable
+
+def showAll(xs: List[AnyShowable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Showable = x.witness
+    print(w.show(x))
+
+val s1 = new AnyShowable:
+  type Value = Square
+  val value = Square(3)
+  val witness = SquareIsShowable
+
+val s2 = new AnyShowable:
+  type Value = Circle
+  val value = Circle(9)
+  val witness = CircleIsShowable
+
+showAll(List(s1, s2))</code></pre>
+<p>But it’s wordy, again 😵‍💫</p>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1200,
+
+        height: 675,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.14,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/scala.min.js"></script><script>hljs.highlightAll();</script>
+    </body>
+</html>
