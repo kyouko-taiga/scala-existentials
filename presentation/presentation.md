@@ -119,7 +119,7 @@ Should we just copy them then, ...
 Or is it  already expressible in Scala? After all it's just a pair
 #TODO drawing
 
-## Containers of Showable
+## Containers of Drawable
 
 ```scala
 trait AnyDrawable:
@@ -128,7 +128,7 @@ trait AnyDrawable:
   val witness: ?
 ```
 
-## Containers of Showable
+## Containers of Drawable
 
 ```scala
 trait AnyDrawable:
@@ -139,7 +139,7 @@ trait AnyDrawable:
 
 <!-- Something that is Drawable, a type that is the same as the one of the value -->
 
-## Containers of Showable
+## Containers of Drawable
 
 ```scala
 trait AnyDrawable:
@@ -148,26 +148,21 @@ trait AnyDrawable:
   val witness: Value is Drawable
 ```
 
-## This is an existential pair!!!!
-
-
 $$\langle \exists X, (X, \text{X is Drawable}) \rangle$$
 
-
-## Containers of Showable
+## Containers of Drawable
 
 ```scala
-trait AnyDrawable:
-  type Value
-  val value: Value
-  val witness: Value is Drawable
-
 def drawAll(xs: List[AnyDrawable]): Unit =
   for x <- xs do
     val v: x.Value = x.value
     val w: x.Value is Drawable = x.witness
     print(w.show(x))
+```
 
+## Containers of Drawable
+
+```scala
 val s1 = new AnyShowable:
   type Value = Square
   val value = Square(3)
@@ -183,20 +178,82 @@ drawAll(List(s1, s2))
 
 <!-- But it's wordy, again 😵‍💫 -->
 
-## Containers of Showable
+## Containers of Drawable
 
+::: columns
+
+:::: column
 ```scala
-trait AnyShowable:
+trait AnyDrawable:
   type Value
   val value: Value
-  val drawer: Value is Showable
+  val witness: Value is Drawable
+```
+::::
 
-def showAll(xs: List[AnyShowable]): Unit =
+:::: column
+```scala
+trait AnyDrawable:
+  type Value: Drawable as witness
+  val value: Value
+ 
+```
+::::
+:::
+
+## Containers of Drawable
+
+::: columns
+
+:::: column
+```scala
+def drawAll(xs: List[AnyDrawable]): Unit =
   for x <- xs do
     val v: x.Value = x.value
-    val w: x.Value is Showable = x.witness
+    val w: x.Value is Drawable = x.witness
     print(w.show(x))
+```
+::::
 
+:::: column
+```scala
+def drawAll(xs: List[AnyShowable]): Unit =
+  for x <- xs do
+    val v: x.Value = x.value
+    print(v.show/*(using x.drawer)*/)
+```
+::::
+:::
+
+## Containers of Drawable
+
+::: columns
+
+:::: column
+```scala
+def drawAll(xs: List[AnyDrawable]): Unit =
+  for x <- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Drawable = x.witness
+    print(w.show(x))
+```
+::::
+
+:::: column
+```scala
+def drawAll(xs: List[AnyShowable]): Unit =
+  for x <- xs do print(x/*.value*/.show/*(using x.drawer)*/)
+```
+::::
+:::
+
+
+## Containers of Drawable
+
+::: columns
+
+:::: column
+```scala
 val s1 = new AnyShowable:
   type Value = Square
   val value = Square(3)
@@ -206,8 +263,42 @@ val s2 = new AnyShowable:
   type Value = Circle
   val value = Circle(9)
   val witness = CircleIsShowable
-
-showAll(List(s1, s2))
 ```
+::::
 
-But it's wordy, again 😵‍💫
+:::: column
+```scala
+trait AnyShowable:
+  type Value: Showable as drawer
+  val value: Value
+
+def showAll(xs: List[AnyShowable]): Unit =
+  for x <- xs do
+    val v: x.Value = x.value
+    print(v.show/*(using x.drawer)*/)
+  for x <- xs do print(x/*.value*/.show/*(using x.drawer)*/)
+
+object AnyShowable:
+  def apply[V: Showable](v: V) = new AnyShowable:
+    type Value = V
+    val value = v
+
+  given [V: Showable] => Conversion[V, AnyShowable] = ...
+
+showAll(Square(1), Circle(9))
+```
+::::
+:::
+
+
+## Containers of Drawable
+
+```scala
+def drawAll(xs: List[AnyDrawable]): Unit =
+  for x <- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Drawable = x.witness
+    print(w.show(x))
+
+drawAll(List(s1, s2))
+```

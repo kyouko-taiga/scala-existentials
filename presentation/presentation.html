@@ -154,47 +154,41 @@ heterogeneous collections ? 😨</p>
 already expressible in Scala? After all it’s just a pair #TODO
 drawing</p>
 </section>
-<section id="containers-of-showable" class="slide level2">
-<h2>Containers of Showable</h2>
+<section id="containers-of-drawable" class="slide level2">
+<h2>Containers of Drawable</h2>
 <pre class="scala"><code>trait AnyDrawable:
   
   val value: ?
   val witness: ?</code></pre>
 </section>
-<section id="containers-of-showable-1" class="slide level2">
-<h2>Containers of Showable</h2>
+<section id="containers-of-drawable-1" class="slide level2">
+<h2>Containers of Drawable</h2>
 <pre class="scala"><code>trait AnyDrawable:
   
   val value: ?
   val witness: ? is Drawable</code></pre>
 <!-- Something that is Drawable, a type that is the same as the one of the value -->
 </section>
-<section id="containers-of-showable-2" class="slide level2">
-<h2>Containers of Showable</h2>
+<section id="containers-of-drawable-2" class="slide level2">
+<h2>Containers of Drawable</h2>
 <pre class="scala"><code>trait AnyDrawable:
   type Value
   val value: Value
   val witness: Value is Drawable</code></pre>
-</section>
-<section id="this-is-an-existential-pair" class="slide level2">
-<h2>This is an existential pair!!!!</h2>
 <p><span class="math display">\langle \exists X, (X, \text{X is
 Drawable}) \rangle</span></p>
 </section>
-<section id="containers-of-showable-3" class="slide level2">
-<h2>Containers of Showable</h2>
-<pre class="scala"><code>trait AnyDrawable:
-  type Value
-  val value: Value
-  val witness: Value is Drawable
-
-def drawAll(xs: List[AnyDrawable]): Unit =
+<section id="containers-of-drawable-3" class="slide level2">
+<h2>Containers of Drawable</h2>
+<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
   for x &lt;- xs do
     val v: x.Value = x.value
     val w: x.Value is Drawable = x.witness
-    print(w.show(x))
-
-val s1 = new AnyShowable:
+    print(w.show(x))</code></pre>
+</section>
+<section id="containers-of-drawable-4" class="slide level2">
+<h2>Containers of Drawable</h2>
+<pre class="scala"><code>val s1 = new AnyShowable:
   type Value = Square
   val value = Square(3)
   val witness = SquareIsShowable
@@ -207,20 +201,60 @@ val s2 = new AnyShowable:
 drawAll(List(s1, s2))</code></pre>
 <!-- But it's wordy, again 😵‍💫 -->
 </section>
-<section id="containers-of-showable-4" class="slide level2">
-<h2>Containers of Showable</h2>
-<pre class="scala"><code>trait AnyShowable:
+<section id="containers-of-drawable-5" class="slide level2">
+<h2>Containers of Drawable</h2>
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>trait AnyDrawable:
   type Value
   val value: Value
-  val drawer: Value is Showable
-
-def showAll(xs: List[AnyShowable]): Unit =
+  val witness: Value is Drawable</code></pre>
+</div><div class="column">
+<pre class="scala"><code>trait AnyDrawable:
+  type Value: Drawable as witness
+  val value: Value
+ </code></pre>
+</div>
+</div>
+</section>
+<section id="containers-of-drawable-6" class="slide level2">
+<h2>Containers of Drawable</h2>
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
   for x &lt;- xs do
     val v: x.Value = x.value
-    val w: x.Value is Showable = x.witness
-    print(w.show(x))
-
-val s1 = new AnyShowable:
+    val w: x.Value is Drawable = x.witness
+    print(w.show(x))</code></pre>
+</div><div class="column">
+<pre class="scala"><code>def showAll(xs: List[AnyShowable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    print(v.show/*(using x.drawer)*/)
+  for x &lt;- xs do print(x/*.value*/.show/*(using x.drawer)*/)</code></pre>
+</div>
+</div>
+</section>
+<section id="containers-of-drawable-7" class="slide level2">
+<h2>Containers of Drawable</h2>
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Drawable = x.witness
+    print(w.show(x))</code></pre>
+</div><div class="column">
+<pre class="scala"><code>def showAll(xs: List[AnyShowable]): Unit =
+  for x &lt;- xs do print(x/*.value*/.show/*(using x.drawer)*/)</code></pre>
+</div>
+</div>
+</section>
+<section id="containers-of-drawable-8" class="slide level2">
+<h2>Containers of Drawable</h2>
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>val s1 = new AnyShowable:
   type Value = Square
   val value = Square(3)
   val witness = SquareIsShowable
@@ -228,10 +262,38 @@ val s1 = new AnyShowable:
 val s2 = new AnyShowable:
   type Value = Circle
   val value = Circle(9)
-  val witness = CircleIsShowable
+  val witness = CircleIsShowable</code></pre>
+</div><div class="column">
+<pre class="scala"><code>trait AnyShowable:
+  type Value: Showable as drawer
+  val value: Value
 
-showAll(List(s1, s2))</code></pre>
-<p>But it’s wordy, again 😵‍💫</p>
+def showAll(xs: List[AnyShowable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    print(v.show/*(using x.drawer)*/)
+  for x &lt;- xs do print(x/*.value*/.show/*(using x.drawer)*/)
+
+object AnyShowable:
+  def apply[V: Showable](v: V) = new AnyShowable:
+    type Value = V
+    val value = v
+
+  given [V: Showable] =&gt; Conversion[V, AnyShowable] = ...
+
+showAll(Square(1), Circle(9))</code></pre>
+</div>
+</div>
+</section>
+<section id="containers-of-drawable-9" class="slide level2">
+<h2>Containers of Drawable</h2>
+<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Drawable = x.witness
+    print(w.show(x))
+
+drawAll(List(s1, s2))</code></pre>
 </section>
     </div>
   </div>
@@ -249,7 +311,7 @@ showAll(List(s1, s2))</code></pre>
       // https://revealjs.com/config/
       Reveal.initialize({
         // Display controls in the bottom right corner
-        controls: true,
+        controls: false,
 
         // Help the user learn the controls by providing hints, for example by
         // bouncing the down arrow when they first encounter a vertical slide
@@ -266,7 +328,7 @@ showAll(List(s1, s2))</code></pre>
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: true,
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',
@@ -396,7 +458,7 @@ showAll(List(s1, s2))</code></pre>
         height: 675,
 
         // Factor of the display size that should remain empty around the content
-        margin: 0.14,
+        margin: 0.12,
 
         // reveal.js plugins
         plugins: [
