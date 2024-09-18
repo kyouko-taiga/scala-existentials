@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Eugene">
-  <meta name="dcterms.date" content="2024-09-18">
+  <meta name="dcterms.date" content="2024-09-19">
   <title>Blop blop</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -59,7 +59,7 @@
 <section id="title-slide">
   <h1 class="title">Blop blop</h1>
   <p class="author">Eugene</p>
-  <p class="date">September 18, 2024</p>
+  <p class="date">September 19, 2024</p>
 </section>
 
 <section id="introduction" class="slide level2">
@@ -180,7 +180,12 @@ Drawable}) \rangle</span></p>
 </section>
 <section id="containers-of-drawable-3" class="slide level2">
 <h2>Containers of Drawable</h2>
-<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
+<pre class="scala"><code>trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable
+
+def drawAll(xs: List[AnyDrawable]): Unit =
   for x &lt;- xs do
     val v: x.Value = x.value
     val w: x.Value is Drawable = x.witness
@@ -200,90 +205,59 @@ val s2 = new AnyShowable:
 
 drawAll(List(s1, s2))</code></pre>
 <!-- But it's wordy, again 😵‍💫 -->
+<!-- ## Containers of Drawable
+
+```scala
+trait AnyDrawable:
+  type Value: Drawable as witness
+  val value: Value
+
+def drawAll(xs: List[AnyShowable]): Unit =
+  for x <- xs do print(x.show)
+
+showAll(Square(1), Circle(9))
+``` -->
 </section>
 <section id="containers-of-drawable-5" class="slide level2">
 <h2>Containers of Drawable</h2>
-<div class="columns">
-<div class="column">
-<pre class="scala"><code>trait AnyDrawable:
-  type Value
-  val value: Value
-  val witness: Value is Drawable</code></pre>
-</div><div class="column">
 <pre class="scala"><code>trait AnyDrawable:
   type Value: Drawable as witness
   val value: Value
- </code></pre>
-</div>
-</div>
+
+def drawAll(xs: List[AnyShowable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    print(v.show/*(using x.drawer)*/)</code></pre>
 </section>
 <section id="containers-of-drawable-6" class="slide level2">
 <h2>Containers of Drawable</h2>
-<div class="columns">
-<div class="column">
-<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
-  for x &lt;- xs do
-    val v: x.Value = x.value
-    val w: x.Value is Drawable = x.witness
-    print(w.show(x))</code></pre>
-</div><div class="column">
-<pre class="scala"><code>def showAll(xs: List[AnyShowable]): Unit =
-  for x &lt;- xs do
-    val v: x.Value = x.value
-    print(v.show/*(using x.drawer)*/)
+<pre class="scala"><code>trait AnyDrawable:
+  type Value: Drawable as witness
+  val value: Value
+
+def drawAll(xs: List[AnyShowable]): Unit =
   for x &lt;- xs do print(x/*.value*/.show/*(using x.drawer)*/)</code></pre>
-</div>
-</div>
 </section>
 <section id="containers-of-drawable-7" class="slide level2">
 <h2>Containers of Drawable</h2>
-<div class="columns">
-<div class="column">
-<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
-  for x &lt;- xs do
-    val v: x.Value = x.value
-    val w: x.Value is Drawable = x.witness
-    print(w.show(x))</code></pre>
-</div><div class="column">
-<pre class="scala"><code>def showAll(xs: List[AnyShowable]): Unit =
-  for x &lt;- xs do print(x/*.value*/.show/*(using x.drawer)*/)</code></pre>
-</div>
-</div>
-</section>
-<section id="containers-of-drawable-8" class="slide level2">
-<h2>Containers of Drawable</h2>
-<div class="columns">
-<div class="column">
-<pre class="scala"><code>val s1 = new AnyShowable:
-  type Value = Square
-  val value = Square(3)
-  val witness = SquareIsShowable
-
-val s2 = new AnyShowable:
-  type Value = Circle
-  val value = Circle(9)
-  val witness = CircleIsShowable</code></pre>
-</div><div class="column">
-<pre class="scala"><code>trait AnyShowable:
-  type Value: Showable as drawer
-  val value: Value
-
-def showAll(xs: List[AnyShowable]): Unit =
-  for x &lt;- xs do
-    val v: x.Value = x.value
-    print(v.show/*(using x.drawer)*/)
-  for x &lt;- xs do print(x/*.value*/.show/*(using x.drawer)*/)
-
-object AnyShowable:
+<pre class="scala"><code>object AnyShowable:
   def apply[V: Showable](v: V) = new AnyShowable:
     type Value = V
     val value = v
 
-  given [V: Showable] =&gt; Conversion[V, AnyShowable] = ...
+drawAll(List(
+  AnyShowable(Square(1))/*(using SquareIsShape)*/,
+  AnyShowable(Circle(9))/*(using CircleIsShape)*/, 
+))</code></pre>
+</section>
+<section id="containers-of-drawable-8" class="slide level2">
+<h2>Containers of Drawable</h2>
+<pre class="scala"><code>object AnyShowable:
+  ...
+  given [V: Showable as witness] =&gt; Conversion[V, AnyShowable] =
+    (x: V) =&gt; AnyShowable(x)(using witness)
 
 showAll(Square(1), Circle(9))</code></pre>
-</div>
-</div>
 </section>
 <section id="containers-of-drawable-9" class="slide level2">
 <h2>Containers of Drawable</h2>

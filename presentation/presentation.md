@@ -153,6 +153,11 @@ $$\langle \exists X, (X, \text{X is Drawable}) \rangle$$
 ## Containers of Drawable
 
 ```scala
+trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable
+
 def drawAll(xs: List[AnyDrawable]): Unit =
   for x <- xs do
     val v: x.Value = x.value
@@ -178,127 +183,81 @@ drawAll(List(s1, s2))
 
 <!-- But it's wordy, again 😵‍💫 -->
 
-## Containers of Drawable
+<!-- ## Containers of Drawable
 
-::: columns
-
-:::: column
-```scala
-trait AnyDrawable:
-  type Value
-  val value: Value
-  val witness: Value is Drawable
-```
-::::
-
-:::: column
 ```scala
 trait AnyDrawable:
   type Value: Drawable as witness
   val value: Value
- 
-```
-::::
-:::
 
-## Containers of Drawable
-
-::: columns
-
-:::: column
-```scala
-def drawAll(xs: List[AnyDrawable]): Unit =
-  for x <- xs do
-    val v: x.Value = x.value
-    val w: x.Value is Drawable = x.witness
-    print(w.show(x))
-```
-::::
-
-:::: column
-```scala
 def drawAll(xs: List[AnyShowable]): Unit =
-  for x <- xs do
-    val v: x.Value = x.value
-    print(v.show/*(using x.drawer)*/)
-```
-::::
-:::
+  for x <- xs do print(x.show)
+
+showAll(Square(1), Circle(9))
+``` -->
 
 ## Containers of Drawable
 
-::: columns
-
-:::: column
 ```scala
-def drawAll(xs: List[AnyDrawable]): Unit =
-  for x <- xs do
-    val v: x.Value = x.value
-    val w: x.Value is Drawable = x.witness
-    print(w.show(x))
-```
-::::
-
-:::: column
-```scala
-def drawAll(xs: List[AnyShowable]): Unit =
-  for x <- xs do print(x/*.value*/.show/*(using x.drawer)*/)
-```
-::::
-:::
-
-
-## Containers of Drawable
-
-::: columns
-
-:::: column
-```scala
-val s1 = new AnyShowable:
-  type Value = Square
-  val value = Square(3)
-  val witness = SquareIsShowable
-
-val s2 = new AnyShowable:
-  type Value = Circle
-  val value = Circle(9)
-  val witness = CircleIsShowable
-```
-::::
-
-:::: column
-```scala
-trait AnyShowable:
-  type Value: Showable as drawer
+trait AnyDrawable:
+  type Value: Drawable as witness
   val value: Value
 
-def showAll(xs: List[AnyShowable]): Unit =
+def drawAll(xs: List[AnyShowable]): Unit =
   for x <- xs do
     val v: x.Value = x.value
-    print(v.show/*(using x.drawer)*/)
-  for x <- xs do print(x/*.value*/.show/*(using x.drawer)*/)
+    print(v.show/*(using x.witness)*/)
+```
 
+## Containers of Drawable
+
+```scala
+trait AnyDrawable:
+  type Value: Drawable as witness
+  val value: Value
+
+def drawAll(xs: List[AnyShowable]): Unit =
+  for x <- xs do print(x/*.value*/.show/*(using x.witness)*/)
+```
+
+## Containers of Drawable
+
+```scala
 object AnyShowable:
   def apply[V: Showable](v: V) = new AnyShowable:
     type Value = V
     val value = v
 
-  given [V: Showable] => Conversion[V, AnyShowable] = ...
-
-showAll(Square(1), Circle(9))
+drawAll(List(
+  AnyShowable(Square(1))/*(using SquareIsShape)*/,
+  AnyShowable(Circle(9))/*(using CircleIsShape)*/, 
+))
 ```
-::::
-:::
-
 
 ## Containers of Drawable
 
 ```scala
-def drawAll(xs: List[AnyDrawable]): Unit =
-  for x <- xs do
-    val v: x.Value = x.value
-    val w: x.Value is Drawable = x.witness
-    print(w.show(x))
+object AnyShowable:
+  ...
+  given [V: Showable as w] => Conversion[V, AnyShowable] =
+    (x: V) => AnyShowable(x)(using w)
 
-drawAll(List(s1, s2))
+showAll(Square(1), Circle(9))
 ```
+
+## Containers
+
+```scala
+trait Container[T <: TypeClass]:
+  type Value: T
+  val value: Value
+
+def showAll(xs: List[Container[Showable]]): Unit =
+  for x <- xs do print(x.show)
+```
+
+## Soundness
+
+## Performance
+
+## Conlusion
