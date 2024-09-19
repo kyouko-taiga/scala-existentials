@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
-  <meta name="author" content="Eugene">
+  <meta name="author" content="Dimi Racordon, Eugene Flesselle, Matt Bovel">
   <meta name="dcterms.date" content="2024-09-19">
-  <title>Blop blop</title>
+  <title>Existential Containers in Scala</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -57,8 +57,8 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Blop blop</h1>
-  <p class="author">Eugene</p>
+  <h1 class="title">Existential Containers in Scala</h1>
+  <p class="author">Dimi Racordon, Eugene Flesselle, Matt Bovel</p>
   <p class="date">September 19, 2024</p>
 </section>
 
@@ -78,27 +78,50 @@ drawAll(shapes)</code></pre>
 <h2>Introduction</h2>
 <pre class="scala"><code>package lib.shapes
 
-trait Shape:
+abstract class Shape:
   def draw: String
 
 class Square(side: Int) extends Shape:
-  def draw = ???</code></pre>
-<p>Problem: the person who did the shapes library forgot about draw What
-do we do now?</p>
+  def draw = &quot;&lt;rect width=&quot;200&quot; height=&quot;100&quot; fill=&quot;blue&quot; /&gt;&quot;</code></pre>
 </section>
-<section id="simple-solution" class="slide level2">
-<h2>Simple solution</h2>
-<!-- But we can not make `Drawable` a super trait of the library shapes retroactively. -->
-<pre class="scala"><code>class DrawableSquare(s: Square) extends Drawable:
-  def draw = &quot;TODO&quot;
+<section id="introduction-2" class="slide level2">
+<h2>Introduction</h2>
+<pre class="scala"><code>package lib.shapes
+
+abstract class Shape:
+  def draw: String
+
+class Square(side: Int) extends Shape:
+  def draw = &quot;&lt;rect width=&quot;200&quot; height=&quot;100&quot; fill=&quot;blue&quot; /&gt;&quot;</code></pre>
+<p>What if the shapes library omited the <code>draw</code> method?</p>
+<!-- we can not make `Drawable` a super trait of the library shapes retroactively.  -->
+</section>
+<section id="wrapper-solution" class="slide level2">
+<h2>Wrapper solution</h2>
+<pre class="scala"><code>abstract class Drawable:
+  def draw
+
+class DrawableSquare(s: Square) extends Drawable:
+  def draw = s&quot;&lt;rect width=${s.side} height=${s.side} fill=&quot;blue&quot; /&gt;&quot;
 
 class DrawableCircle(c: Circle) extends Drawable:
-  def draw = &quot;TODO&quot;
+  def draw = s&quot;&lt;circle r=&quot;${c.radius}&quot; fill=&quot;red&quot; /&gt;&quot;
 
 ...
 
 drawAll(DrawableSquare(Square(3)), DrawableCircle(Circle(5)))</code></pre>
-<!-- But wrapping and unwrapping shapes will obviously not scala satisfactorily -->
+<!-- But wrapping and unwrapping shapes will obviously not be satisfactorily 
+
+involves tedious boilerplate. 
+- class decl 
+- wrapping & unwrapping
+
+Involves a runtine cost, possibly even linear if wrapping lists
+
+problem grows with number of 
+- imported types 
+- but also, triats, DrawableSerializableSquare
+ -->
 </section>
 <section id="type-classes" class="slide level2">
 <h2>Type Classes</h2>
@@ -109,13 +132,13 @@ def drawAll[T](xs: List[T])(witness: Drawable[T]): Unit =
   for x &lt;- xs do print(witness.draw(x))
 
 val SquareIsDrawable:
-  def draw(x: X) = TODO
+  def draw(x: X) = s&quot;&lt;rect width=${s.side} height=${s.side} fill=&quot;blue&quot; /&gt;&quot;
 
 drawAll[Square](List(Square(3), Square(4)))(SquareIsDrawable)</code></pre>
 <!-- Okay great, but still kinda wordy -->
 </section>
-<section id="with-type-classes-context-parameters" class="slide level2">
-<h2>With Type Classes &amp; Context parameters</h2>
+<section id="type-classes-with-context-parameters" class="slide level2">
+<h2>Type Classes with Context Parameters</h2>
 <pre class="scala"><code>trait Drawable extends TypeClass:
   extension(self: Self) def draw: String
 
@@ -123,36 +146,47 @@ def drawAll[T: Drawable](xs: List[T]): Unit =
   for x &lt;- xs do print(x.draw)
 
 given Square is Drawable:
-  extension(self: Square) def draw = TODO
+  extension(self: Square) def draw = 
+    s&quot;&lt;rect width=${s.side} height=${s.side} fill=&quot;blue&quot; /&gt;&quot;
 
 drawAll(List(Square(3), Square(4))) // OK!</code></pre>
-<p>We got retroactive conformance, usable ergonomically, so problem
-solved !?</p>
+<!-- no need to explicitly pass + use the witness -->
+<p>We got retroactive conformance, usable ergonomically, problem
+solved!?</p>
 </section>
 <section id="problem" class="slide level2">
 <h2>Problem</h2>
 <pre class="scala"><code>given Circle is Shape:
-  extension(self: Square) def draw = TODO
+  extension(self: Square) def draw = 
+    s&quot;&lt;circle r=&quot;${c.radius}&quot; fill=&quot;red&quot; /&gt;&quot;
 
-drawAll(List(Square(3), Circle(9))) // Type Error:</code></pre>
-<p>#TODO exact msg</p>
-<p>Are generic definitions using type classes then incomparable with
-heterogeneous collections ? 😨</p>
+drawAll(List(Square(3), Circle(9))) // Type Error</code></pre>
+<!-- #TODO exact msg -->
+<p>How could we define <code>drawAll</code> to accept a heterogenous
+list of <code>Shape</code>s ?</p>
 </section>
-<section id="what-others-do" class="slide level2">
-<h2>What Others Do</h2>
-<!-- Language features -->
-<pre class="rust"><code>fn drawAll(xs: std::vec&lt;dyn Drawable&gt;) -&gt; () = ...</code></pre>
+<section id="existential-containers-as-a-language-feature"
+class="slide level2">
+<h2>Existential Containers as a Language Feature</h2>
+<!-- TODO check syntax -->
+<pre class="rust"><code>fn drawAll(xs: Vec&lt;Box&lt;dyn Drawable&gt;&gt;) { ... }</code></pre>
 <ul>
+<li>Rust has <code>dyn</code> traits
+<!-- why I am told, you need a box, since `dyn ?` is an unsized type --></li>
 <li>Swift similarly has <code>any Drawable</code></li>
 </ul>
-<pre><code>{ 
+<!-- ```
+{ 
   value // of any type of shape
   witness // contains the definition of how to draw the value 
-}</code></pre>
-<p>Should we just copy them then, … %% r has x many lines … %% Or is it
-already expressible in Scala? After all it’s just a pair #TODO
-drawing</p>
+}
+``` -->
+<!-- 
+Should we just copy them then, and add yet anoter Scala feature  ?
+
+Or is is really just a pair of a value and a witness,
+And is it already expressible in Scala?
+-->
 </section>
 <section id="containers-of-drawable" class="slide level2">
 <h2>Containers of Drawable</h2>
@@ -175,10 +209,17 @@ drawing</p>
   type Value
   val value: Value
   val witness: Value is Drawable</code></pre>
+</section>
+<section id="containers-of-drawable-3" class="slide level2">
+<h2>Containers of Drawable</h2>
+<pre class="scala"><code>trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable</code></pre>
 <p><span class="math display">\langle \exists X, (X, \text{X is
 Drawable}) \rangle</span></p>
 </section>
-<section id="containers-of-drawable-3" class="slide level2">
+<section id="containers-of-drawable-4" class="slide level2">
 <h2>Containers of Drawable</h2>
 <pre class="scala"><code>trait AnyDrawable:
   type Value
@@ -191,7 +232,7 @@ def drawAll(xs: List[AnyDrawable]): Unit =
     val w: x.Value is Drawable = x.witness
     print(w.show(x))</code></pre>
 </section>
-<section id="containers-of-drawable-4" class="slide level2">
+<section id="containers-of-drawable-5" class="slide level2">
 <h2>Containers of Drawable</h2>
 <pre class="scala"><code>val s1 = new AnyShowable:
   type Value = Square
@@ -218,7 +259,7 @@ def drawAll(xs: List[AnyShowable]): Unit =
 showAll(Square(1), Circle(9))
 ``` -->
 </section>
-<section id="containers-of-drawable-5" class="slide level2">
+<section id="containers-of-drawable-6" class="slide level2">
 <h2>Containers of Drawable</h2>
 <pre class="scala"><code>trait AnyDrawable:
   type Value: Drawable as witness
@@ -227,18 +268,18 @@ showAll(Square(1), Circle(9))
 def drawAll(xs: List[AnyShowable]): Unit =
   for x &lt;- xs do
     val v: x.Value = x.value
-    print(v.show/*(using x.drawer)*/)</code></pre>
+    print(v.show/*(using x.witness)*/)</code></pre>
 </section>
-<section id="containers-of-drawable-6" class="slide level2">
+<section id="containers-of-drawable-7" class="slide level2">
 <h2>Containers of Drawable</h2>
 <pre class="scala"><code>trait AnyDrawable:
   type Value: Drawable as witness
   val value: Value
 
 def drawAll(xs: List[AnyShowable]): Unit =
-  for x &lt;- xs do print(x/*.value*/.show/*(using x.drawer)*/)</code></pre>
+  for x &lt;- xs do print(x/*.value*/.show/*(using x.witness)*/)</code></pre>
 </section>
-<section id="containers-of-drawable-7" class="slide level2">
+<section id="containers-of-drawable-8" class="slide level2">
 <h2>Containers of Drawable</h2>
 <pre class="scala"><code>object AnyShowable:
   def apply[V: Showable](v: V) = new AnyShowable:
@@ -250,24 +291,32 @@ drawAll(List(
   AnyShowable(Circle(9))/*(using CircleIsShape)*/, 
 ))</code></pre>
 </section>
-<section id="containers-of-drawable-8" class="slide level2">
+<section id="containers-of-drawable-9" class="slide level2">
 <h2>Containers of Drawable</h2>
 <pre class="scala"><code>object AnyShowable:
   ...
-  given [V: Showable as witness] =&gt; Conversion[V, AnyShowable] =
-    (x: V) =&gt; AnyShowable(x)(using witness)
+  given [V: Showable as w] =&gt; Conversion[V, AnyShowable] =
+    (x: V) =&gt; AnyShowable(x)(using w)
 
 showAll(Square(1), Circle(9))</code></pre>
 </section>
-<section id="containers-of-drawable-9" class="slide level2">
-<h2>Containers of Drawable</h2>
-<pre class="scala"><code>def drawAll(xs: List[AnyDrawable]): Unit =
-  for x &lt;- xs do
-    val v: x.Value = x.value
-    val w: x.Value is Drawable = x.witness
-    print(w.show(x))
+<section id="containers" class="slide level2">
+<h2>Containers</h2>
+<pre class="scala"><code>trait Container[T &lt;: TypeClass]:
+  type Value: T
+  val value: Value
 
-drawAll(List(s1, s2))</code></pre>
+def showAll(xs: List[Container[Showable]]): Unit =
+  for x &lt;- xs do print(x.show)</code></pre>
+</section>
+<section id="soundness" class="slide level2">
+<h2>Soundness</h2>
+</section>
+<section id="performance" class="slide level2">
+<h2>Performance</h2>
+</section>
+<section id="conlusion" class="slide level2">
+<h2>Conlusion</h2>
 </section>
     </div>
   </div>

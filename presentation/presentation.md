@@ -1,6 +1,6 @@
 ---
-title: Blop blop
-author: "Eugene"
+title: Existential Containers in Scala
+author: "Dimi Racordon, Eugene Flesselle, Matt Bovel"
 ---
 
 ## Introduction
@@ -23,32 +23,59 @@ drawAll(shapes)
 ```scala
 package lib.shapes
 
-trait Shape:
+abstract class Shape:
   def draw: String
 
 class Square(side: Int) extends Shape:
-  def draw = ???
+  def draw = "<rect width="200" height="100" fill="blue" />"
 ```
 
-Problem: the person who did the shapes library forgot about draw
-What do we do now?
+## Introduction
 
-## Simple solution
-
-
-<!-- But we can not make `Drawable` a super trait of the library shapes retroactively. -->
 ```scala
+package lib.shapes
+
+abstract class Shape:
+  def draw: String
+
+class Square(side: Int) extends Shape:
+  def draw = "<rect width="200" height="100" fill="blue" />"
+```
+
+What if the shapes library omited the `draw` method?
+
+<!-- we can not make `Drawable` a super trait of the library shapes retroactively.  -->
+
+## Wrapper solution
+
+```scala
+abstract class Drawable:
+  def draw
+
 class DrawableSquare(s: Square) extends Drawable:
-  def draw = "TODO"
+  def draw = s"<rect width=${s.side} height=${s.side} fill="blue" />"
 
 class DrawableCircle(c: Circle) extends Drawable:
-  def draw = "TODO"
+  def draw = s"<circle r="${c.radius}" fill="red" />"
 
 ...
 
 drawAll(DrawableSquare(Square(3)), DrawableCircle(Circle(5)))
 ```
-<!-- But wrapping and unwrapping shapes will obviously not scala satisfactorily -->
+
+<!-- But wrapping and unwrapping shapes will obviously not be satisfactorily 
+
+involves tedious boilerplate. 
+- class decl 
+- wrapping & unwrapping
+
+Involves a runtine cost, possibly even linear if wrapping lists
+
+problem grows with number of 
+- imported types 
+- but also, triats, DrawableSerializableSquare
+ -->
+
 
 ##  Type Classes
 
@@ -60,14 +87,14 @@ def drawAll[T](xs: List[T])(witness: Drawable[T]): Unit =
   for x <- xs do print(witness.draw(x))
 
 val SquareIsDrawable:
-  def draw(x: X) = TODO
+  def draw(x: X) = s"<rect width=${s.side} height=${s.side} fill="blue" />"
 
 drawAll[Square](List(Square(3), Square(4)))(SquareIsDrawable)
 ```
 
 <!-- Okay great, but still kinda wordy -->
 
-## With Type Classes & Context parameters
+## Type Classes with Context Parameters
 
 ```scala
 trait Drawable extends TypeClass:
@@ -77,47 +104,52 @@ def drawAll[T: Drawable](xs: List[T]): Unit =
   for x <- xs do print(x.draw)
 
 given Square is Drawable:
-  extension(self: Square) def draw = TODO
+  extension(self: Square) def draw = 
+    s"<rect width=${s.side} height=${s.side} fill="blue" />"
 
 drawAll(List(Square(3), Square(4))) // OK!
 ```
-
-We got retroactive conformance, usable ergonomically, so problem solved !?
+<!-- no need to explicitly pass + use the witness -->
+We got retroactive conformance, usable ergonomically, problem solved!?
 
 ## Problem
 
 ```scala
 given Circle is Shape:
-  extension(self: Square) def draw = TODO
+  extension(self: Square) def draw = 
+    s"<circle r="${c.radius}" fill="red" />"
 
-drawAll(List(Square(3), Circle(9))) // Type Error:
+drawAll(List(Square(3), Circle(9))) // Type Error
 ```
-#TODO exact msg
+<!-- #TODO exact msg -->
 
-Are generic definitions using type classes then incomparable with heterogeneous collections ? 😨 
+How could we define `drawAll` to accept a heterogenous list of `Shape`s ?
 
 
-## What Others Do
+## Existential Containers as a Language Feature
 
-<!-- Language features -->
-
+<!-- TODO check syntax -->
 ```rust
-fn drawAll(xs: std::vec<dyn Drawable>) -> () = ...
+fn drawAll(xs: Vec<Box<dyn Drawable>>) { ... }
 ```
 
+- Rust has `dyn` traits
+<!-- why I am told, you need a box, since `dyn ?` is an unsized type -->
 - Swift similarly has `any Drawable`
 
-```
+<!-- ```
 { 
   value // of any type of shape
   witness // contains the definition of how to draw the value 
 }
-```
+``` -->
 
-Should we just copy them then, ...
-%% r has x many lines ... %%
-Or is it  already expressible in Scala? After all it's just a pair
-#TODO drawing
+<!-- 
+Should we just copy them then, and add yet anoter Scala feature  ?
+
+Or is is really just a pair of a value and a witness,
+And is it already expressible in Scala?
+-->
 
 ## Containers of Drawable
 
@@ -138,6 +170,15 @@ trait AnyDrawable:
 ```
 
 <!-- Something that is Drawable, a type that is the same as the one of the value -->
+
+## Containers of Drawable
+
+```scala
+trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable
+```
 
 ## Containers of Drawable
 
