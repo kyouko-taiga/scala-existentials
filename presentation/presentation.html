@@ -62,6 +62,12 @@
   <p class="date">September 19, 2024</p>
 </section>
 
+<section class="slide level2">
+
+<p>EPFL, LAMP <!-- TODO EPFL, LAMP 
+MPLR 2024
+--></p>
+</section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
 <p>Say we have a list of shapes we want to draw</p>
@@ -82,7 +88,10 @@ abstract class Shape:
   def draw: String
 
 class Square(side: Int) extends Shape:
-  def draw = &quot;&lt;rect width=&quot;200&quot; height=&quot;100&quot; fill=&quot;blue&quot; /&gt;&quot;</code></pre>
+  def draw = &quot;&lt;rect width=&quot;200&quot; height=&quot;100&quot; fill=&quot;blue&quot; /&gt;&quot;
+
+class Circle(radius: Int) extends Shape:
+  def draw = s&quot;&lt;circle r=&quot;${c.radius}&quot; fill=&quot;red&quot; /&gt;&quot;</code></pre>
 </section>
 <section id="introduction-2" class="slide level2">
 <h2>Introduction</h2>
@@ -92,14 +101,17 @@ abstract class Shape:
   def draw: String
 
 class Square(side: Int) extends Shape:
-  def draw = &quot;&lt;rect width=&quot;200&quot; height=&quot;100&quot; fill=&quot;blue&quot; /&gt;&quot;</code></pre>
-<p>What if the shapes library omited the <code>draw</code> method?</p>
-<!-- we can not make `Drawable` a super trait of the library shapes retroactively.  -->
+  def draw = &quot;&lt;rect width=&quot;200&quot; height=&quot;100&quot; fill=&quot;blue&quot; /&gt;&quot;
+
+class Circle(radius: Int) extends Shape:
+  def draw = s&quot;&lt;circle r=&quot;${c.radius}&quot; fill=&quot;red&quot; /&gt;&quot;</code></pre>
+<p>What if the shapes library omited the <code>draw</code> method?
+<!-- we can not make `Drawable` a super trait of the library shapes retroactively.  --></p>
 </section>
 <section id="wrapper-solution" class="slide level2">
 <h2>Wrapper solution</h2>
 <pre class="scala"><code>abstract class Drawable:
-  def draw
+  def draw: String
 
 class DrawableSquare(s: Square) extends Drawable:
   def draw = s&quot;&lt;rect width=${s.side} height=${s.side} fill=&quot;blue&quot; /&gt;&quot;
@@ -110,17 +122,18 @@ class DrawableCircle(c: Circle) extends Drawable:
 ...
 
 drawAll(DrawableSquare(Square(3)), DrawableCircle(Circle(5)))</code></pre>
+<!-- Involves tedious boilerplate
+- Grows with the number of shapes
+- Traits  -->
 <!-- But wrapping and unwrapping shapes will obviously not be satisfactorily 
 
 involves tedious boilerplate. 
-- class decl 
 - wrapping & unwrapping
+- each wrappable thing needs a class decl
+- each reotractive traits needs new wrappers
+  - not to mention their combination (DrawableSerializableSquare)
 
 Involves a runtine cost, possibly even linear if wrapping lists
-
-problem grows with number of 
-- imported types 
-- but also, triats, DrawableSerializableSquare
  -->
 </section>
 <section id="type-classes" class="slide level2">
@@ -128,14 +141,25 @@ problem grows with number of
 <pre class="scala"><code>trait Drawable[X]:
   def draw(x: X): String
 
-def drawAll[T](xs: List[T])(witness: Drawable[T]): Unit =
+def drawAll[T](witness: Drawable[T])(xs: List[T]): Unit =
+  for x &lt;- xs do print(witness.draw(x))</code></pre>
+</section>
+<section id="type-classes-1" class="slide level2">
+<h2>Type Classes</h2>
+<pre class="scala"><code>trait Drawable[X]:
+  def draw(x: X): String
+
+def drawAll[T](witness: Drawable[T])(xs: List[T]): Unit =
   for x &lt;- xs do print(witness.draw(x))
 
-val SquareIsDrawable:
-  def draw(x: X) = s&quot;&lt;rect width=${s.side} height=${s.side} fill=&quot;blue&quot; /&gt;&quot;
+val SquareIsDrawable = new Drawable[Square]:
+  def draw(x: X) = 
+    s&quot;&lt;rect width=${s.side} height=${s.side} fill=&quot;blue&quot; /&gt;&quot;
 
 drawAll[Square](List(Square(3), Square(4)))(SquareIsDrawable)</code></pre>
-<!-- Okay great, but still kinda wordy -->
+<!-- Okay great, but still kinda wordy 
+Scala, as most languages which support type class oriented programming, has contextual abs
+-->
 </section>
 <section id="type-classes-with-context-parameters" class="slide level2">
 <h2>Type Classes with Context Parameters</h2>
@@ -149,7 +173,7 @@ given Square is Drawable:
   extension(self: Square) def draw = 
     s&quot;&lt;rect width=${s.side} height=${s.side} fill=&quot;blue&quot; /&gt;&quot;
 
-drawAll(List(Square(3), Square(4))) // OK!</code></pre>
+drawAll(List(Square(3), Square(4)))</code></pre>
 <!-- no need to explicitly pass + use the witness -->
 <p>We got retroactive conformance, usable ergonomically, problem
 solved!?</p>
@@ -162,30 +186,33 @@ solved!?</p>
 
 drawAll(List(Square(3), Circle(9))) // Type Error</code></pre>
 <!-- #TODO exact msg -->
-<p>How could we define <code>drawAll</code> to accept a heterogenous
-list of <code>Shape</code>s ?</p>
+<p>Could we amend the <code>drawAll</code> definition to accept a
+heterogenous list of <code>Shape</code>s ?</p>
+<!-- Rust says yes -->
 </section>
 <section id="existential-containers-as-a-language-feature"
 class="slide level2">
 <h2>Existential Containers as a Language Feature</h2>
-<!-- TODO check syntax -->
-<pre class="rust"><code>fn drawAll(xs: Vec&lt;Box&lt;dyn Drawable&gt;&gt;) { ... }</code></pre>
 <ul>
-<li>Rust has <code>dyn</code> traits
-<!-- why I am told, you need a box, since `dyn ?` is an unsized type --></li>
+<li>Rust has <code>dyn</code> traits</li>
 <li>Swift similarly has <code>any Drawable</code></li>
 </ul>
+<pre class="rust"><code>fn drawAll(xs: Vec&lt;Box&lt;dyn Drawable&gt;&gt;) { ... }</code></pre>
+<!-- which I am told, you need a box, since `dyn ?` is an unsized type -->
 <!-- ```
 { 
   value // of any type of shape
   witness // contains the definition of how to draw the value 
 }
 ``` -->
+<ul>
+<li>So should we add a similar construct to Scala ?</li>
+</ul>
 <!-- 
 Should we just copy them then, and add yet anoter Scala feature  ?
 
-Or is is really just a pair of a value and a witness,
-And is it already expressible in Scala?
+Or it is really just a pair of: a value, and the body of draw method ?
+That is already expressible in Scala?
 -->
 </section>
 <section id="containers-of-drawable" class="slide level2">
@@ -230,93 +257,226 @@ def drawAll(xs: List[AnyDrawable]): Unit =
   for x &lt;- xs do
     val v: x.Value = x.value
     val w: x.Value is Drawable = x.witness
-    print(w.show(x))</code></pre>
+    print(w.draw(x))</code></pre>
 </section>
 <section id="containers-of-drawable-5" class="slide level2">
 <h2>Containers of Drawable</h2>
-<pre class="scala"><code>val s1 = new AnyShowable:
+<pre class="scala"><code>val s1 = new AnyDrawable:
   type Value = Square
   val value = Square(3)
-  val witness = SquareIsShowable
+  val witness = SquareIsDrawable
 
-val s2 = new AnyShowable:
+val s2 = new AnyDrawable:
   type Value = Circle
   val value = Circle(9)
-  val witness = CircleIsShowable
+  val witness = CircleIsDrawable
 
 drawAll(List(s1, s2))</code></pre>
-<!-- But it's wordy, again 😵‍💫 -->
-<!-- ## Containers of Drawable
-
-```scala
-trait AnyDrawable:
-  type Value: Drawable as witness
-  val value: Value
-
-def drawAll(xs: List[AnyShowable]): Unit =
-  for x <- xs do print(x.show)
-
-showAll(Square(1), Circle(9))
-``` -->
+<!-- But it's wordy, again 😵‍💫 
+We started out with the claim that wrapper are bad, 
+and now I'm trying to sell you this?!
+-->
 </section>
 <section id="containers-of-drawable-6" class="slide level2">
 <h2>Containers of Drawable</h2>
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable
+
+def drawAll(xs: List[AnyDrawable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Drawable = x.witness
+    print(w.draw(x))</code></pre>
+</div><div class="column">
 <pre class="scala"><code>trait AnyDrawable:
   type Value: Drawable as witness
   val value: Value
 
-def drawAll(xs: List[AnyShowable]): Unit =
+
+def drawAll(xs: List[AnyDrawable]): Unit =
   for x &lt;- xs do
     val v: x.Value = x.value
-    print(v.show/*(using x.witness)*/)</code></pre>
+    print(v.draw)
+ </code></pre>
+</div>
+</div>
 </section>
 <section id="containers-of-drawable-7" class="slide level2">
 <h2>Containers of Drawable</h2>
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>trait AnyDrawable:
+  type Value
+  val value: Value
+  val witness: Value is Drawable
+
+def drawAll(xs: List[AnyDrawable]): Unit =
+  for x &lt;- xs do
+    val v: x.Value = x.value
+    val w: x.Value is Drawable = x.witness
+    print(w.draw(x))</code></pre>
+</div><div class="column">
 <pre class="scala"><code>trait AnyDrawable:
   type Value: Drawable as witness
   val value: Value
 
-def drawAll(xs: List[AnyShowable]): Unit =
-  for x &lt;- xs do print(x/*.value*/.show/*(using x.witness)*/)</code></pre>
+
+def drawAll(xs: List[AnyDrawable]): Unit =
+  for x &lt;- xs do print(x.draw)
+ 
+</code></pre>
+</div>
+</div>
 </section>
 <section id="containers-of-drawable-8" class="slide level2">
 <h2>Containers of Drawable</h2>
-<pre class="scala"><code>object AnyShowable:
-  def apply[V: Showable](v: V) = new AnyShowable:
-    type Value = V
-    val value = v
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>val s1 = new AnyDrawable:
+  type Value = Square
+  val value = Square(3)
+  val witness = SquareIsDrawable
 
-drawAll(List(
-  AnyShowable(Square(1))/*(using SquareIsShape)*/,
-  AnyShowable(Circle(9))/*(using CircleIsShape)*/, 
-))</code></pre>
+val s2 = new AnyDrawable:
+  type Value = Circle
+  val value = Circle(9)
+  val witness = CircleIsDrawable
+
+drawAll(List(s1, s2))</code></pre>
+</div><div class="column">
+<pre class="scala"><code>object AnyDrawable:
+  def apply[V: Drawable](v: V) = 
+    new AnyDrawable:
+      type Value = V
+      val value = v
+
+
+
+val s1 = AnyDrawable(Square(1))
+val s2 = AnyDrawable(Circle(9))
+drawAll(List(s1, s2))</code></pre>
+</div>
+</div>
 </section>
 <section id="containers-of-drawable-9" class="slide level2">
 <h2>Containers of Drawable</h2>
-<pre class="scala"><code>object AnyShowable:
-  ...
-  given [V: Showable as w] =&gt; Conversion[V, AnyShowable] =
-    (x: V) =&gt; AnyShowable(x)(using w)
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>val s1 = new AnyDrawable:
+  type Value = Square
+  val value = Square(3)
+  val witness = SquareIsDrawable
 
-showAll(Square(1), Circle(9))</code></pre>
+val s2 = new AnyDrawable:
+  type Value = Circle
+  val value = Circle(9)
+  val witness = CircleIsDrawable
+
+drawAll(List(s1, s2))</code></pre>
+</div><div class="column">
+<pre class="scala"><code>object AnyDrawable:
+  def apply[V: Drawable](v: V) = 
+    new AnyDrawable:
+      type Value = V
+      val value = v
+  
+  given [V: Drawable as w] =&gt; 
+      Conversion[V, AnyDrawable] =
+    (x: V) =&gt; AnyDrawable(x)(using w)
+
+drawAll(List(Square(1), Circle(9)))</code></pre>
+</div>
+</div>
+<!-- 
+Can we generalize ?
+ -->
 </section>
-<section id="containers" class="slide level2">
-<h2>Containers</h2>
+<section id="generic-containers" class="slide level2">
+<h2>Generic Containers</h2>
+<div class="columns">
+<div class="column">
+<pre class="scala"><code>trait AnyDrawable:
+  type Value: Drawable as witness
+  val value: Value</code></pre>
+</div><div class="column">
 <pre class="scala"><code>trait Container[T &lt;: TypeClass]:
-  type Value: T
-  val value: Value
-
-def showAll(xs: List[Container[Showable]]): Unit =
-  for x &lt;- xs do print(x.show)</code></pre>
+  type Value: T as witness
+  val value: Value</code></pre>
+</div>
+</div>
+<pre class="scala"><code>def drawAll(xs: List[Container[Drawable]]): Unit =
+  for x &lt;- xs do print(x.draw)</code></pre>
+<!-- `T` is a tparam as opposed to type member -->
+<ul>
+<li><p>No restrictions on the trait <code>T</code> used in a Container
+<!-- rust requires T to be "object-safe"
+e.g. It must not have any associated types with generics.
+ --></p></li>
+<li><p>We can generalize further to Containers with</p>
+<ul>
+<li><code>witness</code>es of multiple traits</li>
+<li><code>Value</code>s having upper and/or lower type bounds
+<!-- e.g. containers of values upper bounded by shape 
+and with witnesses that the value is both drawable, and serilalizable --></li>
+</ul></li>
+</ul>
 </section>
-<section id="soundness" class="slide level2">
-<h2>Soundness</h2>
+<section id="soundness-for-free" class="slide level2">
+<h2>Soundness for free</h2>
+<pre class="scala"><code>trait Container[T &lt;: TypeClass]:
+  type Value: T as witness
+  val value: Value</code></pre>
+<ul>
+<li><p>Implemented as library abstraction</p></li>
+<li><p>With no changes to the type system
+<!-- 3 line change, to omit `.value` --></p></li>
+<li><p>Depedent-Object-Types, the basis of the Scala type system, have
+been proven sound</p></li>
+<li><p>The safety of the encoding is hence an immediate consequence <!--
+But of course, we rely on DOT, which is not trivial itself
+ --></p></li>
+</ul>
+<!-- ## Stable example TODO? -->
 </section>
 <section id="performance" class="slide level2">
 <h2>Performance</h2>
+<p><img data-src="dispatch.svg" /></p>
+<p>Time to apply a simple operation (adding the value of a class field
+to a constant) to 10 million objects in a contiguous array.
+<!-- The operation is modeled using a type class and existential containers in the Existential versions, while it is modeled using a virtual method in the Inheritance version.  -->
+<!-- The graph shows the runtime in milliseconds for the 10 million operations, as a function of the number of different object types present in the array.  -->
+The error bars show the 99th percentile, while the markers represent the
+measurement means.</p>
+<!--  likely to produce smaller code -->
 </section>
 <section id="conlusion" class="slide level2">
 <h2>Conlusion</h2>
+<p>We build on established solutions: - Type Classes: for retroactive
+conformance, and more - Existential Containers: for definitions taking
+collections with heterogeneous conformances</p>
+<p>We contribute an implementation of Existential Containers for Scala:
+- As a library abstraction - With no constraints on the type of captured
+traits - Usable ergonomically with contextual abstractions - With some,
+but reasonable, performance overhead</p>
+</section>
+<section id="performance-benchmark-programs" class="slide level2">
+<h2>Performance Benchmark Programs</h2>
+<pre class="scala"><code>trait C extends TypeClass:
+  extension (s: Self) def f(): Double
+
+final class C1(val x: Double)
+
+given C1 is C:
+  extension (s: C1) def f(): Double = s.x + 401.0</code></pre>
+<pre class="scala"><code>abstract class C:
+  def f(): Double
+
+final class C1(val x: Double) extends C:
+  def f(): Double = x + 401.0</code></pre>
 </section>
     </div>
   </div>
