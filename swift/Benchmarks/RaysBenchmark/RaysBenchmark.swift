@@ -8,9 +8,9 @@ let benchmarks = {
   let config = Benchmark.Configuration(
       metrics: [BenchmarkMetric.wallClock],
       timeUnits: BenchmarkTimeUnits.microseconds,
-      warmupIterations: 1000,
+      warmupIterations: 2500,
       maxDuration: .seconds(600),
-      maxIterations: 1000
+      maxIterations: 2500
   )
   for shapeCount in shapeCounts {
     Benchmark("runExistential(shapeCount:\(shapeCount))", configuration: config) { _ in
