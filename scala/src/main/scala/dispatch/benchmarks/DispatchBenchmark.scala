@@ -11,8 +11,8 @@ import lcg.Random
 
 @BenchmarkMode(Array(JMHMode.SingleShotTime))
 @Fork(value = 1)
-@Warmup(iterations = 1000, time = 1, timeUnit = SECONDS)
-@Measurement(iterations = 1000, time = 1, timeUnit = SECONDS)
+@Warmup(iterations = 2500, time = 1, timeUnit = SECONDS)
+@Measurement(iterations = 2500, time = 1, timeUnit = SECONDS)
 @State(Scope.Benchmark)
 @OutputTimeUnit(MICROSECONDS)
 class DispatchBenchmark:
